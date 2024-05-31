@@ -58,7 +58,6 @@ const getBevs = async() => {
                     }else{  //Stops if there are none left
                         await browser.close();
                     }
-                    
                 });
             }catch(error){
                 console.error('Failed to parse json');
@@ -133,14 +132,14 @@ const start = async () =>{
             try{
                 let bevVolume = 0;
                 if(bev.raw.lcbo_unit_volume && bev.raw.lcbo_total_volume){
-                    const volumeSplit = lcbo_unit_volume.split("x");
+                    const volumeSplit = bev.raw.lcbo_unit_volume.split("x");
                     if(volumeSplit.length > 1){
                         bevVolume = parseFloat(volumeSplit[1].trim());
                     }else{
                         bevVolume = parseFloat(volumeSplit[0]);
                     }
                 }else if(bev.raw.lcbo_unit_volume){
-                    const volumeSplit = lcbo_unit_volume.split("x");
+                    const volumeSplit = bev.raw.lcbo_unit_volume.split("x");
                     if(volumeSplit.length > 1){
                         bevVolume = parseFloat(volumeSplit[1].trim());
                     }else{
