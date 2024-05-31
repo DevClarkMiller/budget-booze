@@ -8,7 +8,7 @@ const DrinksCard = ({drink}) =>{
     return(
         <>
             { drink &&
-                <CardWrapper className='drinksCard flex flex-col items-center justify-center w-1/4 relative md:w-1/6' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
+                <CardWrapper href={drink.link} className='drinksCard flex flex-col items-center justify-center w-1/4 relative md:w-1/6' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
                     <div className={`flippableCard w-full h-full flex flex-col items-center justify-between text-clip text-center ${flip && 'flip'}`}>
                         <h2>{drink.drink_name}</h2>
                         <img src={drink.image_url}></img>

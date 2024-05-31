@@ -22,7 +22,7 @@ function App() {
     }
     innerAsync();
   }, []);
-  
+
   const calcMLPerStandard = (drink) =>{
     return 17.05 / (drink.alcohol_percent / 100)
     //return (drink.total_volume * drink.pieces_per) / calcStandard(drink);
@@ -39,6 +39,15 @@ function App() {
   const calcStandardPrice = (drink) =>{
     return calcMLPerStandard(drink) * calcPricePerML(drink);
   }
+
+  useEffect(() =>{
+    if(unsortedDrinksContent){
+      console.log('Now going to sort drinks')
+      setDrinksContent(unsortedDrinksContent.sort((drink1, drink2) =>{
+        return calcStandardPrice(drink1) - calcStandardPrice(drink2);
+      }));
+    }
+  });
 
   useEffect(() =>{
     if(unsortedDrinksContent){
