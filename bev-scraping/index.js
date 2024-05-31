@@ -4,7 +4,6 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 const process = require('process');
 const url = 'https://www.lcbo.com/en/products#t=clp-products&sort=relevancy&layout=card';
-const fs = require('fs');
 let requestCount = 0;
 
 const categoriesStringENUM = {
@@ -24,7 +23,8 @@ const categoriesENUM = {
 }
 
 const sqlDB = require('../backend/routes/database');
-const db = new sqlDB().DB;
+const { link } = require('fs');
+const db = new sqlDB().createDB();
 let sql;
 
 const getBevs = async() => {
@@ -88,11 +88,12 @@ const getBevs = async() => {
 }
 
 const insertBevsToDB = (bevs) =>{
+    const dateISO = new Date().toISOString();
     //Do insert query for each of the bevs
     bevs.forEach((bev) =>{
-        sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url) VALUES (?,?,?,?,?,?,?)'
+        sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link) VALUES (?,?,?,?,?,?,?,?,?)'
 
-        db.run(sql, [bev.title, bev.volume, bev.percent, bev.category, bev.piecesPer, bev.price, bev.thumbnail], (err)=>{
+        db.run(sql, [bev.title, bev.volume, bev.percent, bev.category, bev.piecesPer, bev.price, bev.thumbnail, dateISO, bev.link], (err)=>{
             if(err){
                 return console.error(err.message);
             }else{
@@ -157,7 +158,8 @@ const start = async () =>{
                     price: parseFloat(bev.raw.ec_price),
                     category: getCategory(bev.raw.ec_category),
                     thumbnail: bev.raw.ec_thumbnails,
-                    piecesPer: parseInt(bev.raw.lcbo_bottles_per_pack)
+                    piecesPer: parseInt(bev.raw.lcbo_bottles_per_pack),
+                    link: bev.uri
                 }
                 if (bevObj.volume > 0 && bevObj.percent > 0 && bevObj.category > 0){
                     allBevs.push(bevObj);
@@ -171,15 +173,6 @@ const start = async () =>{
     console.log(`Drink count: ${allBevs.length}`);
 
     insertBevsToDB(allBevs);
-
-    /*
-    fs.writeFile('bevs.json', JSON.stringify(allBevs), err => {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log('File finished!');
-        }
-    });*/
 }
 
 

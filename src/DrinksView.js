@@ -1,9 +1,12 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { DrinksContext } from "./App";
 import DrinksCard from "./DrinksCard";
+import CardWrapper from "./CardWrapper";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const DrinksView = ({drinkChunks}) =>{    
+    const navigate = useNavigate();
     const [chunk, setChunk] = useState(null);
 
     const {id} = useParams();
@@ -15,14 +18,42 @@ const DrinksView = ({drinkChunks}) =>{
         //console.log(drinkChunks[parseInt(id)]);
     }, [drinkChunks, id]);
 
+    const handleIncrementPage = () =>{
+        if(parseInt(id) + 1 < drinkChunks.length){
+            navigate(`/${parseInt(id) + 1}`);
+        }
+    }
+
+    const handleDecrementPage = () =>{
+        if(parseInt(id) - 1 >= 0){
+            navigate(`/${parseInt(id) - 1}`);
+        }
+    }
+
     return(
-        <div className="drinksView">
-            {
-                chunk && chunk.map((drink) =>(
-                    <DrinksCard key={`${drink.drink_name}|${drink.id}`} drink={drink}/>
-                ))
-            }
-        </div>
+        <>
+            <div className="drinksView flex flex-row justify-center flex-wrap">
+                {
+                    chunk && chunk.map((drink) =>(
+                        <DrinksCard key={`${drink.drink_name}|${drink.id}`} drink={drink}/>
+                    ))
+                }
+                
+            </div>
+            <div className="flex flex-row justify-center">
+                    <CardWrapper className='w-fit'>
+
+                        <button className="flex w-full h-full justify-center items-center" onClick={handleDecrementPage}><FaArrowLeft /></button>
+
+                    </CardWrapper>
+
+                    <CardWrapper className='w-fit'>
+
+                        <button className="flex justify-center items-center" onClick={handleIncrementPage}><FaArrowRight /></button>
+                        
+                    </CardWrapper>
+                </div>
+        </>   
     );
 }
 

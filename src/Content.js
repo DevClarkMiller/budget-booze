@@ -1,13 +1,13 @@
 import { useState, useEffect, useContext } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { DrinksContext } from "./App";
 import DrinksView from "./DrinksView";
-import ButtonBar from "./ButtonBar";
-
 
 const Content = () =>{
+    const navigate = useNavigate();
     const { drinksContent } = useContext(DrinksContext);
     const [drinkChunks, setDrinkChunks] = useState(null);
+    const [chunksShown, setChunksShown] = useState(0);
 
 
     const chunkArray = (array, chunkSize) =>{
@@ -25,14 +25,11 @@ const Content = () =>{
     }, [drinksContent]);
 
     useEffect(() =>{
-        if(drinkChunks){
-            //console.log(drinkChunks);
-        }
+        navigate('/0')
     }, [drinkChunks]);
-    
-    
+
     return(
-        <main>
+        <main className="flex flex-col items-center justify-center">
             <Routes>
                 <Route path="/" element={<h2>Select a page!</h2>}/>
                 {
@@ -41,9 +38,6 @@ const Content = () =>{
                 
                 <Route path="*" element ={<div>Page not Found 😢</div>}/>
             </Routes>
-            {
-                drinkChunks && <ButtonBar chunks={drinkChunks} />
-            }
         </main>
     );
 }

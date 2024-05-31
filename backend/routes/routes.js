@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAll } = require('./controllers');
+const { getAll, getSpirit, getBeerCider, getWine, getCooler } = require('./controllers');
 const cors = require('cors')
 
 
@@ -7,5 +7,13 @@ module.exports = (app) =>{
     app.use(express.json());
     app.use(cors());
 
-    app.get('/getAll', getAll);
-}
+    app.get('/get/all', getAll);
+
+    app.get('/get/spirit', getSpirit);
+
+    app.get('/get/beerCider', getBeerCider);
+
+    app.get('/get/wine', getWine);
+
+    app.get('/get/cooler', getCooler);
+}    
