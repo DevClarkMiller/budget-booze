@@ -7,8 +7,8 @@ import ButtonBar from "./ButtonBar";
 
 const Content = () =>{
     const { drinksContent } = useContext(DrinksContext);
+    const [drinkChunks, setDrinkChunks] = useState(null);
 
-    const [drinkChunks, setDrinksChunks] = useState(null);
 
     const chunkArray = (array, chunkSize) =>{
         return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, i) =>
@@ -18,11 +18,11 @@ const Content = () =>{
 
     useEffect(() =>{
         //sets the context for the split up pages of drinks
-        if(drinksContent != null){
-            const chunks = chunkArray(drinksContent, 20);
-            setDrinksChunks(chunks);
+        if(drinksContent){
+            const chunks = chunkArray(drinksContent, 50);
+            setDrinkChunks(chunks);
         }
-    }, []);
+    }, [drinksContent]);
 
     useEffect(() =>{
         if(drinkChunks){
@@ -36,17 +36,14 @@ const Content = () =>{
             <Routes>
                 <Route path="/" element={<h2>Select a page!</h2>}/>
                 {
-                    drinkChunks && drinkChunks.map((chunk, index) =>(
-                        <Route path={`/${index}`} element={<DrinksView drinksChunk={chunk}/>}/>
-                    ))
-                    
+                    drinkChunks && <Route path="/:id" element={<DrinksView drinkChunks={drinkChunks}/>}/>
                 }
+                
                 <Route path="*" element ={<div>Page not Found 😢</div>}/>
             </Routes>
             {
                 drinkChunks && <ButtonBar chunks={drinkChunks} />
             }
-            
         </main>
     );
 }

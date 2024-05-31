@@ -1,18 +1,26 @@
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { DrinksContext } from "./App";
 import CardWrapper from "./CardWrapper";
 
-const DrinksCard = () =>{
-    const id = useParams();
+const DrinksCard = ({drink}) =>{
+    const {drinksContent} = useContext(DrinksContext);
 
-
-
+    /*
+    useEffect(() =>{
+        console.log(drink)
+    }, [drink]);*/
     return(
-        <CardWrapper className="drinksCard">
-            <div className="w-full h-full">
-                <h2>{drink.title}</h2>
-            </div>
-        </CardWrapper>
+        <>
+            { drink &&
+                <CardWrapper className="drinksCard">
+                <div className="w-full h-full">
+                    <h2>{drink.drink_name}|${drink.price}|{drink.alcohol_percent}%|</h2>
+                </div>
+                </CardWrapper>
+            }
+        </>
+        
     );
 }
 

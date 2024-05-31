@@ -17,6 +17,7 @@ const getAll = (req, res) =>{
 
     console.log('Test request');
     sql = `SELECT 
+    d.id,
     d.drink_name,
     d.total_volume,
     d.alcohol_percent,

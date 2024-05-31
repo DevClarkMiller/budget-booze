@@ -6,14 +6,12 @@ const ButtonBar = ({ chunks }) =>{
     const [pageNums, setPageNums] = useState([]);
 
     useEffect(() =>{
-        console.log(chunks);
         if(chunks){
             let tempPageNums = [];
             chunks.forEach((chunk, index) =>{
                 tempPageNums.push(index);
             });
             setPageNums(tempPageNums);
-            console.log(tempPageNums);
         }
     }, [chunks]);
     
