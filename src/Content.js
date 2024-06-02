@@ -1,11 +1,13 @@
 import { useState, useEffect, useContext } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Link} from "react-router-dom";
 import { DrinksContext } from "./App";
 import DrinksView from "./DrinksView";
+import NotFound from "./NotFound";
+import CardWrapper from "./CardWrapper";
 
 const Content = () =>{
     const navigate = useNavigate();
-    const { drinksContent } = useContext(DrinksContext);
+    const { drinksContent, setShowCombos } = useContext(DrinksContext);
     const [drinkChunks, setDrinkChunks] = useState(null);
     const [chunksShown, setChunksShown] = useState(0);
 
@@ -28,15 +30,25 @@ const Content = () =>{
         navigate('/0')
     }, [drinkChunks]);
 
+    useEffect(() =>{
+        setShowCombos(true);
+    }, []);
+
     return(
         <main className="flex flex-col items-center justify-center">
             <Routes>
-                <Route path="/" element={<h2>Select a page!</h2>}/>
+                <Route path="/" element={
+                <div className="flex items-start justify-center">
+                    <CardWrapper>
+                        <Link to={'/0'}><h2 className="text-5xl">Take me to the booze! 🍺</h2></Link>
+                    </CardWrapper>
+                    
+                </div>}
+                />
                 {
                     drinkChunks && <Route path="/:id" element={<DrinksView drinkChunks={drinkChunks}/>}/>
                 }
-                
-                <Route path="*" element ={<div>Page not Found 😢</div>}/>
+                <Route path="*" element ={<NotFound />}/>
             </Routes>
         </main>
     );

@@ -175,6 +175,4 @@ const start = async () =>{
     insertBevsToDB(allBevs);
 }
 
-
-
 start();

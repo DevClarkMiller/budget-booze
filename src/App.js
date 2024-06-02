@@ -4,93 +4,91 @@ import { Routes, Route } from "react-router-dom";
 import NotFound from "./NotFound";
 import Content from "./Content";
 import Header from "./Header";
+import About from "./About";
 import { fetchGet } from "./functions/fetch"
+import { calcStandardPrice, calcStandard } from "./drinkCalcs";
 
 export const DrinksContext = createContext();
 function App() {
-  const [unsortedDrinksContent, setUnsortedDrinksContext] = useState(null);
   const [currentSort, setCurrentSort] = useState('standardPrice');
 
+  const [rawDrinksContent, setRawDrinksContent] = useState(null);
   const [drinksContent, setDrinksContent] = useState(null);
+  const [showCombos, setShowCombos] = useState(false);
   /*
     Upon page render, fetch all the drinks from backend
   */
   useEffect(() =>{
     const innerAsync = async() =>{
       const data = await fetchGet('get/all');
-      setDrinksContent(data);
+      setRawDrinksContent(data);
     }
     innerAsync();
   }, []);
 
-  const calcMLPerStandard = (drink) =>{
-    return 17.05 / (drink.alcohol_percent / 100)
-    //return (drink.total_volume * drink.pieces_per) / calcStandard(drink);
-  }
+  const sortDrinks = (sortName) =>{
+    if(rawDrinksContent){
+      let tempDrinks = [...rawDrinksContent];
 
-  const calcPricePerML = (drink) =>{
-    return drink.price / (drink.total_volume * drink.pieces_per);
-  }
-
-  const calcStandard = (drink) =>{
-    return (((drink.total_volume * drink.pieces_per) * drink.alcohol_percent) / 17.05) / 100
-  }
-
-  const calcStandardPrice = (drink) =>{
-    return calcMLPerStandard(drink) * calcPricePerML(drink);
+      switch(sortName){
+        case "standardPrice":
+          tempDrinks.sort((drink1, drink2) =>{ return calcStandardPrice(drink1) - calcStandardPrice(drink2)});
+          break;
+        case "totalPrice":
+          tempDrinks.sort((drink1, drink2) =>{ return drink1.price - drink2.price});
+          break;
+        case "standardQty":
+          tempDrinks.sort((drink1, drink2) =>{ return calcStandard(drink2) - calcStandard(drink1)});
+          break;
+        default:
+          tempDrinks.sort((drink1, drink2) =>{ return calcStandardPrice(drink1) - calcStandardPrice(drink2)});
+          break;
+      }
+      setDrinksContent(tempDrinks);
+    }
   }
 
   useEffect(() =>{
-    if(unsortedDrinksContent){
-      console.log('Now going to sort drinks')
-      setDrinksContent(unsortedDrinksContent.sort((drink1, drink2) =>{
-        return calcStandardPrice(drink1) - calcStandardPrice(drink2);
-      }));
-    }
-  });
+    sortDrinks(currentSort);
+  }, [rawDrinksContent]);
 
   useEffect(() =>{
-    if(unsortedDrinksContent){
-      console.log('Now going to sort drinks')
-      setDrinksContent(unsortedDrinksContent.sort((drink1, drink2) =>{
-        return calcStandardPrice(drink1) - calcStandardPrice(drink2);
-      }));
-    }
-  }, [unsortedDrinksContent]);
+    sortDrinks(currentSort);
+  }, [currentSort]);
+
 
   const handleCategoryChange = async (category) =>{
     let data;
     //Does a different request to change the data depending on what the category is
     switch(category){
       case "All":
-        data = await fetchGet('get/all');
+        data = await fetchGet('/get/all');
       break;
       case "Spirit":
-        data = await fetchGet('get/spirit');
+        data = await fetchGet('/get/spirit');
         break;
       case "BeerCider":
-        data = await fetchGet('get/beerCider');
+        data = await fetchGet('/get/beerCider');
         break;
       case "Wine":
-        data = await fetchGet('get/wine');
+        data = await fetchGet('/get/wine');
         break;
       case "Cooler":
-        data = await fetchGet('get/cooler');
+        data = await fetchGet('/get/cooler');
         break;
       default: 
       break;
     }
-    setUnsortedDrinksContext(data);
+    setRawDrinksContent(data);
   }
-
-  
 
   return (
     <div className="App flex flex-col items-center min-h-full	bg-orange-200">
-      <DrinksContext.Provider value={{drinksContent, handleCategoryChange}}>
-        <Header />
+      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setShowCombos}}>
+        <Header setCurrentSort={setCurrentSort} showCombos={showCombos} setShowCombos={setShowCombos}/>
         <Routes>
             <Route path="/*" element={<Content />}/>
+            <Route path="/about" element={<About setShowCombos={setShowCombos} />}/>
             <Route path="*" element={<NotFound />}/>
         </Routes>
       </DrinksContext.Provider>

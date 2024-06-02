@@ -8,7 +8,7 @@ const DrinksCard = ({drink}) =>{
     return(
         <>
             { drink &&
-                <CardWrapper href={drink.link} className='drinksCard flex flex-col items-center justify-center w-1/4 relative md:w-1/6' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
+                <CardWrapper href={drink.link} className='drinksCard flex flex-col items-center justify-center w-1/2 relative sm:w-2/5 md:w-1/5 lg:w-1/6' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
                     <div className={`flippableCard w-full h-full flex flex-col items-center justify-between text-clip text-center ${flip && 'flip'}`}>
                         <h2>{drink.drink_name}</h2>
                         <img src={drink.image_url}></img>
@@ -17,14 +17,13 @@ const DrinksCard = ({drink}) =>{
                 {
                     flip && 
                     <div className="flippableCard absolute w-1/2 h-1/2 flex flex-col items-center justify-evenly text-clip text-center">
-                        <h2>{drink.pieces_per} x {drink.total_volume}</h2>
+                        <h2>{(drink.pieces_per > 1) ? `${drink.pieces_per} x ${drink.total_volume} ml` : `${drink.total_volume} ml`}</h2>
                         <h2># Standard Drinks: {numStandards}</h2>
                     </div>
                 }
                 </CardWrapper>
             }
         </>
-        
     );
 }
 
