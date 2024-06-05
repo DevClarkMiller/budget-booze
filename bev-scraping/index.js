@@ -2,9 +2,11 @@ const parse = require('node-html-parser');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
-const process = require('process');
 const url = 'https://www.lcbo.com/en/products#t=clp-products&sort=relevancy&layout=card';
 let requestCount = 0;
+const { exec } = require('child_process');
+const { resolve } = require('path');
+const commitDB = 'scp "C:\\Users\\squas\\Desktop\\sqlite-tools-win-x64-3460000\\bevs.db" clark@167.99.10.95:/var/database/bevs.db';
 
 const categoriesStringENUM = {
     Spirit: "Spirits",
@@ -22,26 +24,80 @@ const categoriesENUM = {
     Cooler: 5
 }
 
-const sqlDB = require('../backend/routes/database');
-const { link } = require('fs');
-const db = new sqlDB().createDB();
+const sqlite3 = require('sqlite3').verbose();
+const DB_PATH = "C:\\Users\\squas\\Desktop\\sqlite-tools-win-x64-3460000\\bevs.db"
 let sql;
+
+const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, (err) =>{
+    if(err) {
+        return console.error(err);
+    }else{
+        console.log('Database opened up successfully!');
+    }
+});
+
+const pushToProd = () =>{
+    db.close((err) => {
+        if (err) {
+          console.error(err.message);
+        }
+        console.log('Closed the database connection.');
+
+        exec(commitDB, (error, stdout, stderr) => {
+            if (error) {
+              console.error(`Error executing PowerShell command: ${error}`);
+              return;
+            }
+            console.log('PowerShell command executed successfully');
+            console.log('Output:', stdout);
+          });
+    });
+}
+
 
 const getBevs = async() => {
     let allBevs = [];
 
     const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: false
+        headless: true,
+        defaultViewport: false,
+        executablePath: puppeteer.executablePath(),
+        args: ["--no-sandbox", "--disable-setuid-sandbox", '--disable-notifications', '--disable-infobars', '--mute-audio']
     });
+    
 
     const page = await browser.newPage();
+
+    await page.setViewport({ width: 1280, height: 800 });
+
+    //Smurfs as windows
+    await page.setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36");
+
+    const currentUserAgent = await page.evaluate(() => navigator.userAgent);
+    console.log('Current User-Agent:', currentUserAgent);
+
+
+    await page.evaluateOnNewDocument(function() {
+        navigator.geolocation.getCurrentPosition = function (cb) {
+          setTimeout(() => {
+            cb({
+              'coords': {
+                accuracy: 21,
+                altitude: null,
+                altitudeAccuracy: null,
+                heading: null,
+                latitude: 42.999075,
+                longitude: -81.236807,
+                speed: null
+              }
+            })
+          }, 1000)
+        }
+    });
 
     page.on('response', async (response) =>{
         const request = response.request();
         requestCount++;
-        
-        
         if(request.url().includes('https://platform.cloud.coveo.com/rest/search/v2?organization')){
             console.log('Target found');
             console.log(request.url());
@@ -49,16 +105,23 @@ const getBevs = async() => {
                 const drinks = await response.json();
                 const bevs = drinks.results;
                 allBevs.push(bevs);
-                
-                //Whenever it finds a good request, it hits uses the loadMore function to load more pages
-                const result = await page.evaluate(async () => {
-                    //Checks if there are still any pages left to load in
-                    if(document.getElementById('loadMore')){
+                setTimeout(async () =>{
+                    const result = await page.evaluate(async () => {
+                        //Checks if there are still any pages left to load in
+                        const btn = document.getElementById('loadMore');
+                        if(window.getComputedStyle(btn).display == 'none'){
+                            return true;
+                        }
                         loadMore();
-                    }else{  //Stops if there are none left
+                        return false;
+                    });
+
+                    if(result){
+                        console.log('NOW GOING TO CLOSE BROWSER! FOUND ALL THE DATA!!!');
                         await browser.close();
                     }
-                });
+                }, 100);
+                //Whenever it finds a good request, it hits uses the loadMore function to load more pages
             }catch(error){
                 console.error('Failed to parse json');
             }
@@ -173,6 +236,8 @@ const start = async () =>{
     console.log(`Drink count: ${allBevs.length}`);
 
     insertBevsToDB(allBevs);
+    pushToProd();
 }
+  
 
 start();

@@ -4,6 +4,7 @@ import { DrinksContext } from "./App";
 import DrinksCard from "./DrinksCard";
 import CardWrapper from "./CardWrapper";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import NotFound from "./NotFound";
 
 const DrinksView = ({drinkChunks}) =>{    
     const navigate = useNavigate();
@@ -32,27 +33,33 @@ const DrinksView = ({drinkChunks}) =>{
 
     return(
         <>
-            <div className="drinksView flex flex-row justify-center flex-wrap">
-                {
-                    chunk && chunk.map((drink) =>(
-                        <DrinksCard key={`${drink.drink_name}|${drink.id}`} drink={drink}/>
-                    ))
-                }
-                
-            </div>
-            <div className="flex flex-row justify-center">
-                    <CardWrapper className='w-fit'>
-
-                        <button className="flex w-full h-full justify-center items-center" onClick={handleDecrementPage}><FaArrowLeft /></button>
-
-                    </CardWrapper>
-
-                    <CardWrapper className='w-fit'>
-
-                        <button className="flex justify-center items-center" onClick={handleIncrementPage}><FaArrowRight /></button>
-                        
-                    </CardWrapper>
+            {chunk &&
+                <>
+                <div className="drinksView flex flex-row justify-center flex-wrap">
+                    {
+                        chunk && chunk.map((drink) =>(
+                            <DrinksCard key={`${drink.drink_name}|${drink.id}`} drink={drink}/>
+                        ))
+                    }
                 </div>
+                <div className="flex flex-row justify-center">
+                        <CardWrapper className='w-fit'>
+
+                            <button className="flex w-full h-full justify-center items-center" onClick={handleDecrementPage}><FaArrowLeft /></button>
+
+                        </CardWrapper>
+
+                        <CardWrapper className='w-fit'>
+
+                            <button className="flex justify-center items-center" onClick={handleIncrementPage}><FaArrowRight /></button>
+                            
+                        </CardWrapper>
+                    </div>
+                </>  
+            }
+            {!chunk && 
+                <NotFound/>
+            }
         </>   
     );
 }

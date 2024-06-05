@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-    baseURL: 'http://budgetbooze.ca/api'
+    baseURL: 'https://budgetbooze.ca/api'
 });

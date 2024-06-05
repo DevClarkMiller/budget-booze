@@ -47,6 +47,10 @@ main{
   filter: blur(10px);
 }
 
+.lobster{
+  font-family: "Lobster", sans-serif;
+}
+
 header h1{
   font-family: "Lobster", sans-serif;
   font-weight: 400;
@@ -55,4 +59,8 @@ header h1{
 
 .hind{
   font-family: "Hind", sans-serif;
+}
+
+.moul{
+  font-family: "Moul", serif;
 }
