@@ -25,7 +25,6 @@ const Header = ({setCurrentSort, showCombos}) =>{
                 }
                 
             </span>
-           
             
             <div className="selects w-5/6 flex items-center gap-1 border-t border-black	pt-2">
                 {

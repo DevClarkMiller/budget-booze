@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-const DB_PATH = "C:\\Users\\squas\\Desktop\\sqlite-tools-win-x64-3460000\\bevs.db"
+const DB_PATH = "C:\\Users\\squas\\Desktop\\sqlite-tools-win-x64-3460000\\Emails.db"
 let sql;
 
 //connect to DB
