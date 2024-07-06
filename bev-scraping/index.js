@@ -1,4 +1,3 @@
-const parse = require('node-html-parser');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
@@ -6,7 +5,6 @@ const url = 'https://www.lcbo.com/en/products#t=clp-products&sort=relevancy&layo
 let requestCount = 0;
 const { exec } = require('child_process');
 const { resolve } = require('path');
-const commitDB = 'scp "C:\\Users\\squas\\Desktop\\sqlite-tools-win-x64-3460000\\bevs.db" clark@167.99.10.95:/var/database/bevs.db';
 
 const categoriesStringENUM = {
     Spirit: "Spirits",
@@ -25,8 +23,10 @@ const categoriesENUM = {
 }
 
 const sqlite3 = require('sqlite3').verbose();
-const DB_PATH = "C:\\Users\\squas\\Desktop\\sqlite-tools-win-x64-3460000\\bevs.db"
+const DB_PATH = "/var/bev-scraping/bevs.db"
 let sql;
+
+const commitDB = `scp ${DB_PATH} clark@167.99.10.95:/var/database/bevs.db`;
 
 const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, (err) =>{
     if(err) {
@@ -37,35 +37,41 @@ const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, (err) =>{
 });
 
 const pushToProd = () =>{
-    db.close((err) => {
-        if (err) {
-          console.error(err.message);
-        }
-        console.log('Closed the database connection.');
+    return new Promise((resolve, reject) =>{
+        console.log('Now going to close db and push to prod!');
+        db.close((err) => {
+            if (err) { 
+                console.error(err.message); 
+                reject(false);
+            }
+            console.log('Closed the database connection.');
+        });
 
+        //Executes the script to move the file to the linux server with scp
         exec(commitDB, (error, stdout, stderr) => {
             if (error) {
-              console.error(`Error executing PowerShell command: ${error}`);
-              return;
+                reject(false); 
+                console.error(`Error executing bash command: ${error}`);
             }
-            console.log('PowerShell command executed successfully');
+            console.log('Bash command executed successfully');
             console.log('Output:', stdout);
-          });
+            resolve(true);
+        });
     });
 }
 
 
 const getBevs = async() => {
     let allBevs = [];
+    let waitCount = 0;
 
     const browser = await puppeteer.launch({
         headless: true,
         defaultViewport: false,
-        executablePath: puppeteer.executablePath(),
+        executablePath: '/usr/bin/google-chrome-stable',
         args: ["--no-sandbox", "--disable-setuid-sandbox", '--disable-notifications', '--disable-infobars', '--mute-audio']
     });
     
-
     const page = await browser.newPage();
 
     await page.setViewport({ width: 1280, height: 800 });
@@ -101,6 +107,9 @@ const getBevs = async() => {
         if(request.url().includes('https://platform.cloud.coveo.com/rest/search/v2?organization')){
             console.log('Target found');
             console.log(request.url());
+
+            //Resets the wait count
+            waitCount = 0;
             try{
                 const drinks = await response.json();
                 const bevs = drinks.results;
@@ -108,19 +117,21 @@ const getBevs = async() => {
                 setTimeout(async () =>{
                     const result = await page.evaluate(async () => {
                         //Checks if there are still any pages left to load in
-                        const btn = document.getElementById('loadMore');
+                        const btn = await document.getElementById('loadMore');
                         if(window.getComputedStyle(btn).display == 'none'){
                             return true;
                         }
                         loadMore();
+                        console.log('Found the load more button!');
                         return false;
                     });
 
                     if(result){
                         console.log('NOW GOING TO CLOSE BROWSER! FOUND ALL THE DATA!!!');
                         await browser.close();
+                        return;
                     }
-                }, 100);
+                }, 150);
                 //Whenever it finds a good request, it hits uses the loadMore function to load more pages
             }catch(error){
                 console.error('Failed to parse json');
@@ -134,9 +145,17 @@ const getBevs = async() => {
     await page.goto(url);
 
     await new Promise(resolve => {
-        const keepAlive = setInterval(() => {
+        const keepAlive = setInterval(async () => {
             // This keeps the promise unresolved, hence keeping the browser open
             console.log('Keeping browser open...');
+            waitCount++;
+            if (waitCount > 5) {
+                console.log('Wait count exceeded 5, closing browser...');
+                allBevs = [];
+                await browser.close();
+                clearInterval(keepAlive);
+                resolve();
+            }
         }, 10000); // Logs every 10 seconds to keep the process alive
 
         // Handle manual closure
@@ -146,24 +165,28 @@ const getBevs = async() => {
         });
     });
 
-    // Returning bevs after browser is closed manually
     return allBevs;
 }
 
 const insertBevsToDB = (bevs) =>{
-    const dateISO = new Date().toISOString();
-    //Do insert query for each of the bevs
-    bevs.forEach((bev) =>{
-        sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link) VALUES (?,?,?,?,?,?,?,?,?)'
+    return new Promise((resolve, reject) =>{
+        console.log('Now going to insert all drinks into the database');
+        const dateISO = new Date().toISOString();
+        //Do insert query for each of the bevs
+        bevs.forEach((bev) =>{
+            sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link) VALUES (?,?,?,?,?,?,?,?,?)'
 
-        db.run(sql, [bev.title, bev.volume, bev.percent, bev.category, bev.piecesPer, bev.price, bev.thumbnail, dateISO, bev.link], (err)=>{
-            if(err){
-                return console.error(err.message);
-            }else{
-                //Wrote successfully to the database
-                //console.log('Wrote record to Drinks Table');
-            }
+            db.run(sql, [bev.title, bev.volume, bev.percent, bev.category, bev.piecesPer, bev.price, bev.thumbnail, dateISO, bev.link], (err)=>{
+                if(err){
+                    console.error(err.message);
+                }else{
+                    //Wrote successfully to the database
+                    //console.log('Wrote record to Drinks Table');
+                }
+            });
         });
+        console.log('Inserted all bevs into the database');
+        resolve(true);
     });
 }
 
@@ -189,7 +212,13 @@ const getCategory = (categories) =>{
 
 const start = async () =>{
     let allBevs = [];
-    const bevsArr = await getBevs();
+    let bevsArr = [];
+
+    //Loops until the browser sucessfully returns all the bevs
+    do{
+        bevsArr = await getBevs();
+       
+    } while(bevsArr.length === 0);
     
     bevsArr.forEach((bevs) =>{
         bevs.forEach((bev)=>{
@@ -235,9 +264,8 @@ const start = async () =>{
 
     console.log(`Drink count: ${allBevs.length}`);
 
-    insertBevsToDB(allBevs);
-    pushToProd();
+    await insertBevsToDB(allBevs);
+    await pushToProd();
 }
-  
 
 start();
