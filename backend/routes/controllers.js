@@ -5,7 +5,7 @@ let sql;
 const getSql = (categoryID) =>{
     return (categoryID) ? 
     `
-        SELECT 
+        SELECT DISTINCT
         d.id,
         d.drink_name,
         d.total_volume,
@@ -22,7 +22,7 @@ const getSql = (categoryID) =>{
         ORDER BY d.price/d.pieces_per ASC;
     ` :
     `
-        SELECT 
+        SELECT DISTINCT
         d.id,
         d.drink_name,
         d.total_volume,
@@ -48,6 +48,7 @@ const getAll = (req, res) =>{
         if(err){
             return console.error(err.message);
         }else{
+            console.log(`Bev count: ${rows.length}`);
             res.send(rows);
         } 
     });
