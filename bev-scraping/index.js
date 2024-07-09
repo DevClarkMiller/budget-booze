@@ -3,8 +3,6 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 const url = 'https://www.lcbo.com/en/products#t=clp-products&sort=relevancy&layout=card';
 let requestCount = 0;
-const { exec } = require('child_process');
-const { resolve } = require('path');
 
 const categoriesStringENUM = {
     Spirit: "Spirits",
@@ -26,8 +24,6 @@ const sqlite3 = require('sqlite3').verbose();
 const DB_PATH = "/var/bev-scraping/bevs.db"
 let sql;
 
-const commitDB = `scp ${DB_PATH} clark@167.99.10.95:/var/database/bevs.db`;
-
 const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, (err) =>{
     if(err) {
         return console.error(err);
@@ -35,30 +31,6 @@ const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, (err) =>{
         console.log('Database opened up successfully!');
     }
 });
-
-const pushToProd = () =>{
-    return new Promise((resolve, reject) =>{
-        console.log('Now going to close db and push to prod!');
-        db.close((err) => {
-            if (err) { 
-                console.error(err.message); 
-                reject(false);
-            }
-            console.log('Closed the database connection.');
-        });
-
-        //Executes the script to move the file to the linux server with scp
-        exec(commitDB, (error, stdout, stderr) => {
-            if (error) {
-                reject(false); 
-                console.error(`Error executing bash command: ${error}`);
-            }
-            console.log('Bash command executed successfully');
-            console.log('Output:', stdout);
-            resolve(true);
-        });
-    });
-}
 
 
 const getBevs = async() => {
@@ -265,7 +237,16 @@ const start = async () =>{
     console.log(`Drink count: ${allBevs.length}`);
 
     await insertBevsToDB(allBevs);
-    await pushToProd();
+
+    //Closes db connection
+
+    console.log('Now going to close db!')
+    db.close((err) => {
+        if (err) { 
+            console.error(err.message); 
+        }
+        console.log('Closed the database connection.');
+    });
 }
 
 start();
