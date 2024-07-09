@@ -168,27 +168,54 @@ const getBevs = async() => {
     return allBevs;
 }
 
-const insertBevsToDB = (bevs) =>{
-    return new Promise((resolve, reject) =>{
+const insertBevsToDB = (bevs) => {
+    return new Promise((resolve, reject) => {
         console.log('Now going to insert all drinks into the database');
         const dateISO = new Date().toISOString();
-        //Do insert query for each of the bevs
-        bevs.forEach((bev) =>{
-            sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link) VALUES (?,?,?,?,?,?,?,?,?)'
 
-            db.run(sql, [bev.title, bev.volume, bev.percent, bev.category, bev.piecesPer, bev.price, bev.thumbnail, dateISO, bev.link], (err)=>{
-                if(err){
-                    console.error(err.message);
-                }else{
-                    //Wrote successfully to the database
-                    //console.log('Wrote record to Drinks Table');
-                }
+        db.serialize(() => {
+            db.run("BEGIN TRANSACTION");
+
+            const sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link) VALUES (?,?,?,?,?,?,?,?,?)';
+            let insertionPromises = bevs.map((bev) => {
+                return new Promise((resolve, reject) => {
+                    db.run(sql, [bev.title, bev.volume, bev.percent, bev.category, bev.piecesPer, bev.price, bev.thumbnail, dateISO, bev.link], (err) => {
+                        if (err) {
+                            console.error(err.message);
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+                });
             });
+
+            Promise.all(insertionPromises)
+                .then(() => {
+                    db.run("COMMIT", (err) => {
+                        if (err) {
+                            console.error('Commit failed:', err.message);
+                            return reject(err);
+                        }
+                        console.log('Inserted all bevs into the database');
+
+                        db.close((err) => {
+                            if (err) {
+                                console.error('Error closing the database:', err.message);
+                                return reject(err);
+                            }
+                            console.log('Closed the database connection.');
+                            resolve(true);
+                        });
+                    });
+                })
+                .catch((err) => {
+                    db.run("ROLLBACK");
+                    reject(err);
+                });
         });
-        console.log('Inserted all bevs into the database');
-        resolve(true);
     });
-}
+};
 
 const getCategory = (categories) =>{
     let length = categories.length;
@@ -265,7 +292,7 @@ const start = async () =>{
     console.log(`Drink count: ${allBevs.length}`);
 
     await insertBevsToDB(allBevs);
-    await pushToProd();
+    //await pushToProd();
 }
 
 start();
