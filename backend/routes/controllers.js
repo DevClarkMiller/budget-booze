@@ -5,7 +5,7 @@ let sql;
 const getSql = (categoryID) =>{
     return (categoryID) ? 
     `
-        SELECT 
+        SELECT DISTINCT
         d.id,
         d.drink_name,
         d.total_volume,
@@ -18,11 +18,11 @@ const getSql = (categoryID) =>{
         d.link
         FROM Drinks d
         INNER JOIN Drink_Categories dc ON d.category_ID = dc.category_ID
-        WHERE d.pieces_per > 0 AND dc.category_ID = ${categoryID} AND substr(d.date_ISO, 1, 10) = date('now')
+        WHERE d.pieces_per > 0 AND dc.category_ID = ${categoryID} AND d.date_ISO = date('now', 'localtime')
         ORDER BY d.price/d.pieces_per ASC;
     ` :
     `
-        SELECT 
+        SELECT DISTINCT
         d.id,
         d.drink_name,
         d.total_volume,
@@ -35,7 +35,7 @@ const getSql = (categoryID) =>{
         d.link
         FROM Drinks d
         INNER JOIN Drink_Categories dc ON d.category_ID = dc.category_ID
-        WHERE d.pieces_per > 0 AND substr(d.date_ISO, 1, 10) = date('now')
+        WHERE d.pieces_per > 0 AND d.date_ISO = date('now', 'localtime')
         ORDER BY d.price/d.pieces_per ASC;`
 }
 
@@ -48,6 +48,7 @@ const getAll = (req, res) =>{
         if(err){
             return console.error(err.message);
         }else{
+            console.log(`Bev count: ${rows.length}`);
             res.send(rows);
         } 
     });

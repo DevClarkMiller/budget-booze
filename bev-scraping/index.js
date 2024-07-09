@@ -3,8 +3,6 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 const url = 'https://www.lcbo.com/en/products#t=clp-products&sort=relevancy&layout=card';
 let requestCount = 0;
-const { exec } = require('child_process');
-const { resolve } = require('path');
 
 const categoriesStringENUM = {
     Spirit: "Spirits",
@@ -26,8 +24,6 @@ const sqlite3 = require('sqlite3').verbose();
 const DB_PATH = "/var/bev-scraping/bevs.db"
 let sql;
 
-const commitDB = `scp ${DB_PATH} clark@167.99.10.95:/var/database/bevs.db`;
-
 const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, (err) =>{
     if(err) {
         return console.error(err);
@@ -35,30 +31,6 @@ const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, (err) =>{
         console.log('Database opened up successfully!');
     }
 });
-
-const pushToProd = () =>{
-    return new Promise((resolve, reject) =>{
-        console.log('Now going to close db and push to prod!');
-        db.close((err) => {
-            if (err) { 
-                console.error(err.message); 
-                reject(false);
-            }
-            console.log('Closed the database connection.');
-        });
-
-        //Executes the script to move the file to the linux server with scp
-        exec(commitDB, (error, stdout, stderr) => {
-            if (error) {
-                reject(false); 
-                console.error(`Error executing bash command: ${error}`);
-            }
-            console.log('Bash command executed successfully');
-            console.log('Output:', stdout);
-            resolve(true);
-        });
-    });
-}
 
 
 const getBevs = async() => {
@@ -171,48 +143,19 @@ const getBevs = async() => {
 const insertBevsToDB = (bevs) => {
     return new Promise((resolve, reject) => {
         console.log('Now going to insert all drinks into the database');
-        const dateISO = new Date().toISOString();
+        const dateISO = new Date().toLocaleDateString('en-ca'); //Outputs it in locale time in format of yyyy-mm-dd
+        //Do insert query for each of the bevs
+        bevs.forEach((bev) =>{
+            sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link) VALUES (?,?,?,?,?,?,?,?,?)'
 
-        db.serialize(() => {
-            db.run("BEGIN TRANSACTION");
-
-            const sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link) VALUES (?,?,?,?,?,?,?,?,?)';
-            let insertionPromises = bevs.map((bev) => {
-                return new Promise((resolve, reject) => {
-                    db.run(sql, [bev.title, bev.volume, bev.percent, bev.category, bev.piecesPer, bev.price, bev.thumbnail, dateISO, bev.link], (err) => {
-                        if (err) {
-                            console.error(err.message);
-                            reject(err);
-                        } else {
-                            resolve();
-                        }
-                    });
-                });
+            db.run(sql, [bev.title, bev.volume, bev.percent, bev.category, bev.piecesPer, bev.price, bev.thumbnail, dateISO, bev.link], (err)=>{
+                if(err){
+                    console.error(err.message);
+                }else{
+                    //Wrote successfully to the database
+                    //console.log('Wrote record to Drinks Table');
+                }
             });
-
-            Promise.all(insertionPromises)
-                .then(() => {
-                    db.run("COMMIT", (err) => {
-                        if (err) {
-                            console.error('Commit failed:', err.message);
-                            return reject(err);
-                        }
-                        console.log('Inserted all bevs into the database');
-
-                        db.close((err) => {
-                            if (err) {
-                                console.error('Error closing the database:', err.message);
-                                return reject(err);
-                            }
-                            console.log('Closed the database connection.');
-                            resolve(true);
-                        });
-                    });
-                })
-                .catch((err) => {
-                    db.run("ROLLBACK");
-                    reject(err);
-                });
         });
     });
 };
@@ -292,7 +235,16 @@ const start = async () =>{
     console.log(`Drink count: ${allBevs.length}`);
 
     await insertBevsToDB(allBevs);
-    //await pushToProd();
+
+    //Closes db connection
+
+    console.log('Now going to close db!')
+    db.close((err) => {
+        if (err) { 
+            console.error(err.message); 
+        }
+        console.log('Closed the database connection.');
+    });
 }
 
 start();
