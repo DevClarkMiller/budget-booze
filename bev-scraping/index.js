@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
+const UserAgent = require('user-agents');
+
 const url = 'https://www.lcbo.com/en/products#t=clp-products&sort=relevancy&layout=card';
 let requestCount = 0;
 
@@ -48,15 +50,18 @@ const getBevs = async() => {
 
     await page.setViewport({ width: 1280, height: 800 });
 
-    //Smurfs as windows
-    await page.setUserAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36");
+    //Gives the browser a random user agent
+    const userAgent = new UserAgent({ deviceCategory: 'desktop' });
+    const randomUserAgent = userAgent.toString();
+
+    await page.setUserAgent(randomUserAgent);
 
     const currentUserAgent = await page.evaluate(() => navigator.userAgent);
     console.log('Current User-Agent:', currentUserAgent);
 
 
-    await page.evaluateOnNewDocument(function() {
-        navigator.geolocation.getCurrentPosition = function (cb) {
+    await page.evaluateOnNewDocument(() => {
+        navigator.geolocation.getCurrentPosition = (cb) => {
           setTimeout(() => {
             cb({
               'coords': {
@@ -72,6 +77,10 @@ const getBevs = async() => {
           }, 1000)
         }
     });
+
+    // page.on('requestfailed', request => {
+    //     console.error('Request failed:', request.url(), request.failure().errorText);
+    // });
 
     page.on('response', async (response) =>{
         const request = response.request();
@@ -110,7 +119,7 @@ const getBevs = async() => {
             }
             
         }else{
-            //console.log(`Request count: ${requestCount}`);
+            // console.log(`Request count: ${requestCount}`);
         }
     });
 
