@@ -152,7 +152,7 @@ const getBevs = async() => {
 const insertBevsToDB = (bevs) => {
     return new Promise((resolve, reject) => {
         console.log('Now going to insert all drinks into the database');
-        const dateISO = new Date().toISOString();
+        const dateISO = new Date().toLocaleDateString('en-ca'); //Outputs it in locale time in format of yyyy-mm-dd
 
         db.serialize(() => {
             db.run("BEGIN TRANSACTION");
