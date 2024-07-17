@@ -206,7 +206,7 @@ module.exports = class BeerScraper extends Scraper {
 
             //3. Push those beers to the database
             console.log('Step 3. Insert parsed beer data into the database');
-            //await this.insertBevsInDB();
+            await this.insertBevsInDB();
 
             console.log(`BEER COUNT: ${this.getNumBevs()}`);
             resolve();
