@@ -16,6 +16,7 @@ class BeerScraper {
         this.BASE_URL = 'https://www.thebeerstore.ca/beers?page=';
         this.TARGET_URL = 'https://qaht1ly72o-dsn.algolia.net/1/indexes/*/queries';
         this.DB_PATH = process.env.DB_PATH;
+        this.STORE = "TBS";
         this.beers = [];
         this.rawBeers = [];
         this.pageIndex = 1;
@@ -23,12 +24,11 @@ class BeerScraper {
 
     getPageURL(){
         let url = "";
-        if(this.pageIndex === 1){
+        if(this.pageIndex === 1){   //First page has different url so check for that
             url = this.INITIAL_URL;
         }else{
             url = this.BASE_URL + this.pageIndex;
         }
-
         this.pageIndex++;
         return url;
     }
@@ -103,8 +103,7 @@ class BeerScraper {
             await new Promise(resolve => {
                 const keepAlive = setInterval(async () => {
                     // This keeps the promise unresolved, hence keeping the browser open
-                    console.log(`Browser Wait Count: ${waitCount}, over 2 browser will end...`);
-                    waitCount++;
+                    console.log(`Browser Wait Count: ${waitCount++}, over ${scraper.WAIT_COUNT_LIMIT} browser will end...`);
                     if (waitCount > scraper.WAIT_COUNT_LIMIT) {
                         console.log(`Wait count exceeded ${scraper.WAIT_COUNT_LIMIT}, closing browser...`);
                         await browser.close();
@@ -128,7 +127,6 @@ class BeerScraper {
     parseBeers(){
         let scraper = this; 
         return new Promise((resolve, reject) =>{
-            const dateISO = new Date().toLocaleDateString('en-ca'); //Outputs it in locale time in format of yyyy-mm-dd
             for(const rawBeer of this.rawBeers){    //First loop
                 for(const beer of rawBeer){ //Second loop for the actual beers
 
@@ -148,10 +146,8 @@ class BeerScraper {
                         pieces_per: beer.size,
                         price: beer.salePrice,
                         image_url: beer.images[0],  //Gets the first img from the array of drink images
-                        date_ISO: dateISO,
-                        link: beerURL,
-                        store: "TBS"
-                    }
+                        link: beerURL
+                    };
 
                     scraper.beers.push(beerObj);
                 }
@@ -160,7 +156,7 @@ class BeerScraper {
         });
     }
 
-    getNumBeers() {return this.beers.length}
+    getNumBeers() { return this.beers.length; }
 
     createDB(){
         let scraper = this;
@@ -183,6 +179,7 @@ class BeerScraper {
                 const db = await scraper.createDB();
 
                 console.log('Now going to insert all beers into the database');
+                const dateISO = new Date().toLocaleDateString('en-ca'); //Outputs it in locale time in format of yyyy-mm-dd
 
                 //4. Open transaction
                 db.serialize(() => {
@@ -192,7 +189,7 @@ class BeerScraper {
                     const sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link, store) VALUES (?,?,?,?,?,?,?,?,?,?)';
                     let insertionPromises = scraper.beers.map((beer) => {
                         return new Promise((resolve, reject) => {
-                            const params = [beer.drink_name, beer.total_volume, beer.alcohol_percent, beer.category_ID, beer.pieces_per, beer.price, beer.image_url, beer.date_ISO, beer.link, beer.store];
+                            const params = [beer.drink_name, beer.total_volume, beer.alcohol_percent, beer.category_ID, beer.pieces_per, beer.price, beer.image_url, dateISO, beer.link, scraper.STORE];
                             db.run(sql, params, (err) => {
                                 if (err) {
                                     console.error(err.message);
@@ -234,26 +231,32 @@ class BeerScraper {
             }
         });
     }
+
+    start(){
+        let scraper = this;
+        return new Promise(async (resolve, reject) =>{
+            //1. Command it to get you the beers 😈
+            console.log('Step 1. Get the raw beer data');
+            
+            //Loops until the browser sucessfully returns all the beers
+            do{ await scraper.getBeers(); }while(scraper.rawBeers.length === 0);
+            
+            //2. Parse those beers
+            console.log('Step 2. Parse the raw beer data');
+            await scraper.parseBeers();
+
+            //3. Push those beers to the database
+            console.log('Step 3. Insert parsed beer data into the database');
+            await scraper.insertBeersInDB();
+
+            console.log(`BEER COUNT: ${scraper.getNumBeers()}`);
+        });
+    }
 };
 
 const start = async () =>{
-    //1. Create a BeerScraper object
-
     let scraper = new BeerScraper();
-
-    //2. Command it to get you the beers 😈
-    console.log('Step 2. Get the raw beer data');
-    await scraper.getBeers();
-    
-    //3. Parse those beers
-    console.log('Step 3. Parse the raw beer data');
-    await scraper.parseBeers();
-
-    //4. Push those beers to the database
-    console.log('Step 4. Insert parsed beer data into the database');
-    await scraper.insertBeersInDB();
-
-    console.log(`ALL BEERS LENGTH: ${scraper.getNumBeers()}`);
+    await scraper.start();
 }
 
 start();
