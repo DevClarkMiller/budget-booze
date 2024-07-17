@@ -1,11 +1,15 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, useCallback } from 'react'
 import { Routes, Route } from "react-router-dom";
+
+//Components
 import NotFound from "./utilities/NotFound";
 import Content from "./Content";
 import Header from "./Header";
 import About from "./About";
+
+//Functions
 import { fetchGet } from "./functions/fetch"
-import { calcStandardPrice, calcStandard } from "./drinkCalcs";
+import { calcStandardPrice, calcStandard } from "./functions/drinkCalcs";
 
 export const DrinksContext = createContext();
 function App() {
@@ -14,18 +18,9 @@ function App() {
   const [rawDrinksContent, setRawDrinksContent] = useState(null);
   const [drinksContent, setDrinksContent] = useState(null);
   const [showCombos, setShowCombos] = useState(false);
-  /*
-    Upon page render, fetch all the drinks from backend
-  */
-  useEffect(() =>{
-    const innerAsync = async() =>{
-      const data = await fetchGet('get/all');
-      setRawDrinksContent(data);
-    }
-    innerAsync();
-  }, []);
 
-  const sortDrinks = (sortName) =>{
+  //Memoized functions
+  const sortDrinks = useCallback((sortName) =>{
     if(rawDrinksContent){
       let tempDrinks = [...rawDrinksContent];
 
@@ -45,15 +40,21 @@ function App() {
       }
       setDrinksContent(tempDrinks);
     }
-  }
-
-  useEffect(() =>{
-    sortDrinks(currentSort);
   }, [rawDrinksContent]);
 
-  useEffect(() =>{
-    sortDrinks(currentSort);
-  }, [currentSort]);
+  /*
+    Upon page render, fetch all the drinks from backend
+  */
+    
+  useEffect(async () =>{
+    const data = await fetchGet('get/all');
+    setRawDrinksContent(data);
+  }, []);
+
+  
+  useEffect(() =>{ sortDrinks(currentSort); }, [rawDrinksContent, currentSort]);
+
+  // useEffect(() =>{ sortDrinks(currentSort); }, [currentSort]);
 
 
   const handleCategoryChange = async (category) =>{

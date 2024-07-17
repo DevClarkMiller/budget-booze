@@ -3,8 +3,7 @@ const db = new sqlDB().createDB();
 let sql;
 
 const getSql = (categoryID) =>{
-    return (categoryID) ? 
-    `
+    const BASE_SQL = `
         SELECT DISTINCT
         d.id,
         d.drink_name,
@@ -15,30 +14,19 @@ const getSql = (categoryID) =>{
         d.pieces_per,
         d.image_url,
         d.date_ISO,
-        d.link
-        FROM Drinks d
-        INNER JOIN Drink_Categories dc ON d.category_ID = dc.category_ID
-        WHERE d.pieces_per > 0 AND dc.category_ID = ${categoryID} AND d.date_ISO = date('now', 'localtime')
-        ORDER BY d.price/d.pieces_per ASC;
-    ` :
-    `
-        SELECT DISTINCT
-        d.id,
-        d.drink_name,
-        d.total_volume,
-        d.alcohol_percent,
-        d.price,
-        dc.Category_Name,
-        d.pieces_per,
-        d.image_url,
-        d.date_ISO,
-        d.link
+        d.link,
+        d.store
         FROM Drinks d
         INNER JOIN Drink_Categories dc ON d.category_ID = dc.category_ID
         WHERE d.pieces_per > 0 AND d.date_ISO = date('now', 'localtime')
-        ORDER BY d.price/d.pieces_per ASC;`
-}
+    `
+    const ORDER_BY = 'ORDER BY d.price/d.pieces_per ASC;';
 
+    return (categoryID) ? 
+    `${BASE_SQL} AND dc.category_ID = ${categoryID} ${ORDER_BY}` 
+        :
+    `${BASE_SQL} ${ORDER_BY}`
+}
 
 const getAll = (req, res) =>{
     console.log('All request');

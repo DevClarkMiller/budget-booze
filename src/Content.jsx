@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback, useMemo } from "react";
 import { Routes, Route, useNavigate, Link} from "react-router-dom";
 
 //Components
@@ -12,31 +12,18 @@ import { DrinksContext } from "./App";
 const Content = () =>{
     const navigate = useNavigate();
     const { drinksContent, setShowCombos } = useContext(DrinksContext);
-    const [drinkChunks, setDrinkChunks] = useState(null);
     const [chunksShown, setChunksShown] = useState(0);
 
+    const CHUNK_SIZE = 50;
 
-    const chunkArray = (array, chunkSize) =>{
-        return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, i) =>
-          array.slice(i * chunkSize, i * chunkSize + chunkSize)
-        );
-    }
-
-    useEffect(() =>{
-        //sets the context for the split up pages of drinks
-        if(drinksContent){
-            const chunks = chunkArray(drinksContent, 50);
-            setDrinkChunks(chunks);
-        }
+    //Memos
+    const drinkChunks = useMemo(() =>{
+        if(!drinksContent) return;
+        return Array.from({ length: Math.ceil(drinksContent.length / CHUNK_SIZE) }, (_, i) =>
+            drinksContent.slice(i * CHUNK_SIZE, i * CHUNK_SIZE + CHUNK_SIZE));
     }, [drinksContent]);
 
-    useEffect(() =>{
-        //navigate('/0')
-    }, [drinkChunks]);
-
-    useEffect(() =>{
-        setShowCombos(true);
-    }, []);
+    useEffect(() =>{ setShowCombos(true); }, []);
 
     return(
         <main className="flex flex-col items-center justify-center">

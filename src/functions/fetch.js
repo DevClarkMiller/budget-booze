@@ -1,6 +1,6 @@
 import api from "../api";
 import outputErrors from "../outputErrors";
-import checkResponseStatus from "../checkResponseStatus";
+import checkResponseStatus from './checkResponseStatus';
 
 const fetchGet = async (location) =>{
     try{

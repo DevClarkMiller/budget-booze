@@ -133,11 +133,11 @@ module.exports = class LcboScraper extends Scraper{
     
         let categoryID;
         switch(category){
-            case categoriesStringENUM.Spirit: categoryID = categoriesENUM.Spirit; break;
-            case categoriesStringENUM.BeerCider: categoryID = categoriesENUM.BeerCider; break;
-            case categoriesStringENUM.Wine: categoryID = categoriesENUM.Wine; break;
-            case categoriesStringENUM.Sake: categoryID = categoriesENUM.Sake; break;
-            case categoriesStringENUM.Cooler: categoryID = categoriesENUM.Cooler; break;
+            case this.categoriesStringENUM.Spirit: categoryID = this.categoriesENUM.Spirit; break;
+            case this.categoriesStringENUM.BeerCider: categoryID = this.categoriesENUM.BeerCider; break;
+            case this.categoriesStringENUM.Wine: categoryID = this.categoriesENUM.Wine; break;
+            case this.categoriesStringENUM.Sake: categoryID = this.categoriesENUM.Sake; break;
+            case this.categoriesStringENUM.Cooler: categoryID = this.categoriesENUM.Cooler; break;
             default: categoryID = 0; break; //Returns 0 if there wasn't a valid drink detected
         }
         return categoryID;
@@ -166,15 +166,14 @@ module.exports = class LcboScraper extends Scraper{
                             drink_name: bev.Title,
                             total_volume: this.getBevVolume(bev),
                             alcohol_percent: parseFloat(bev.raw.lcbo_alcohol_percent),
-                            category_ID: getCategory(bev.raw.ec_category),
+                            category_ID: this.getCategory(bev.raw.ec_category),
                             pieces_per: parseInt(bev.raw.lcbo_bottles_per_pack),
                             price: parseFloat(bev.raw.ec_price),
                             image_url: bev.raw.ec_thumbnails,
-                            date_ISO: dateISO,
                             link: bev.uri
                         }
                         if(bevObj.volume <= 0 || bevObj.percent <= 0 || bevObj.category <= 0) continue;   //Continues if it's not a drink
-                        allBevs.push(bevObj);
+                        this.bevs.push(bevObj);
                     }catch(error){
                         console.error(error);
                     }
@@ -185,24 +184,24 @@ module.exports = class LcboScraper extends Scraper{
     }
 
     insertBevsInDB = () => {
-        //2. Create promise 
+        //1. Create promise 
         return new Promise(async (resolve, reject) => {
             try{
-                //3. Open database connection with promise
-                const db = this.createDB();
+                //2. Open database connection with promise
+                const db = await this.createDB();
                 
                 console.log('Now going to insert all drinks into the database');
                 const dateISO = new Date().toLocaleDateString('en-ca'); //Outputs it in locale time in format of yyyy-mm-dd
 
-                //4. Open transaction
+                //3. Open transaction
                 db.serialize(() => {
                     db.run("BEGIN TRANSACTION");
         
-                    //5. Insert each of the bevs into the transaction
+                    //4. Insert each of the bevs into the transaction
                     const sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link, store) VALUES (?,?,?,?,?,?,?,?,?,?)';
                     let insertionPromises = this.bevs.map((bev) => {
                         return new Promise((resolve, reject) => {
-                            db.run(sql, [bev.title, bev.volume, bev.percent, bev.category, bev.piecesPer, bev.price, bev.thumbnail, dateISO, bev.link, this.STORE], (err) => {
+                            db.run(sql, [bev.drink_name, bev.total_volume, bev.alcohol_percent, bev.category_ID, bev.pieces_per, bev.price, bev.image_url, dateISO, bev.link, this.STORE], (err) => {
                                 if (err) {
                                     console.error(err.message);
                                     reject(err);
@@ -213,7 +212,7 @@ module.exports = class LcboScraper extends Scraper{
                         });
                     });
 
-                    //6. If all is well, commit transaction, if not then roll it back
+                    //5. If all is well, commit transaction, if not then roll it back
                     Promise.all(insertionPromises)
                         .then(() => {
                             db.run("COMMIT", (err) => {
@@ -254,7 +253,7 @@ module.exports = class LcboScraper extends Scraper{
 
             await this.parseBevs();
 
-            await this.insertBevsToDB(allBevs);
+            await this.insertBevsInDB();
 
             console.log(`DRINK COUNT: ${this.getNumBevs()}`);
             resolve();
