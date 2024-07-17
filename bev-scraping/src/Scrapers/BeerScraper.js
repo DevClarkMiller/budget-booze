@@ -20,8 +20,8 @@ module.exports = class BeerScraper extends Scraper {
     getPageURL(){
         let url = "";
         //First page has different url so check for that
-        if(this.pageIndex === 1) url = this.INITIAL_URL;
-        else url = this.BASE_URL + this.pageIndex;
+        if(this.pageIndex === 1) {url = this.INITIAL_URL;}
+        else {url = this.BASE_URL + this.pageIndex;}
         
         this.pageIndex++;
         return url;
@@ -66,7 +66,6 @@ module.exports = class BeerScraper extends Scraper {
                         if(beers.length === 0) throw new Error("No beers found on this page!"); //If the length is 0, that means all the beers in the beer store have been parsed!
                         this.rawBevs.push(beers);
                         console.log(`RAW BEERS LENGTH: ${this.rawBevs.length}`);
-                        console.log(`NEW PAGE URL: ${this.getPageURL()}`);
                         await page.goto(this.getPageURL()); //Progresses to the next page
                     }catch(err){
                         console.error('Failed to parse json');
