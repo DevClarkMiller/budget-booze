@@ -4,6 +4,11 @@ let sql;
 
 const getSql = (categoryID) =>{
     const BASE_SQL = `
+        WITH RankedItems AS (
+            SELECT *,
+                ROW_NUMBER() OVER (PARTITION BY link ORDER BY (SELECT NULL)) AS rn
+            FROM Drinks
+        )
         SELECT DISTINCT
         d.id,
         d.drink_name,
@@ -16,9 +21,10 @@ const getSql = (categoryID) =>{
         d.date_ISO,
         d.link,
         d.store
-        FROM Drinks d
+        FROM RankedItems d
         INNER JOIN Drink_Categories dc ON d.category_ID = dc.category_ID
-        WHERE d.pieces_per > 0 AND d.date_ISO = date('now', 'localtime')
+        WHERE rn = 1 AND d.pieces_per > 0 
+        AND d.date_ISO = date('now', 'localtime')
     `
     const ORDER_BY = 'ORDER BY d.price/d.pieces_per ASC;';
 
