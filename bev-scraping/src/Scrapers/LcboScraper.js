@@ -37,7 +37,7 @@ module.exports = class LcboScraper extends Scraper{
             const browser = await puppeteer.launch({
                 headless: process.env.HEADLESS === "true",
                 defaultViewport: false,
-                //executablePath: process.env.CHROME_EXE,
+                executablePath: process.env.CHROME_EXE,
                 args: ["--no-sandbox", "--disable-setuid-sandbox", '--disable-notifications', '--disable-infobars', '--mute-audio', '--disable-web-security', '--disable-features=IsolateOrigins,site-per-process'],
                 // permissions: ['geolocation'] // Disable geolocation permission dialog
             });

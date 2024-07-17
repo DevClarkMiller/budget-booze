@@ -2,9 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base{
+  html{
+    @apply min-h-full;
+  }
+}
 
-html{
-  min-height: 100%;
+@layer components{
+  .col-flex-center{
+    @apply flex flex-col items-center;
+  }
+
+  .nice-trans{
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .drinks-card-mobile{
+    @apply drinks-card col-flex-center w-3/4 relative sm:w-2/5 md:w-1/5 lg:w-1/6;
+  }
+
+  .drink-card-desktop{
+    @apply drinks-card col-flex-center justify-center w-3/4 relative sm:w-2/5 md:w-1/5 lg:w-1/6;
+  }
+
+  .drinks-card-mobile, .drinks-card-desktop{
+    @apply font-semibold;
+  }
+
+  .flippable-card-back{
+    @apply nice-trans absolute size-full col-flex-center text-clip text-center opacity-0;
+  }
+
+  .flippable-card-front{
+    @apply nice-trans size-full col-flex-center justify-between text-clip text-center;
+  }
+
+  .drink-link{
+    @apply p-2 rounded-md bg-beerOrange text-white font-semibold;
+    @apply transition-colors duration-300 ease-in-out;
+    @apply hover:bg-beerLightOrange;
+  }
+
+  .text-one-line{
+    @apply whitespace-nowrap overflow-ellipsis overflow-hidden;
+  }
 }
 
 body {
@@ -26,18 +67,14 @@ code {
   background-image: linear-gradient(to bottom, rgb(240, 213, 181), rgb(241, 180, 109), rgb(226, 144, 50), rgb(241, 180, 109), rgb(240, 213, 181));
 }
 
-main{
-  width: 100%;
-}
-
-.drinksCard h2{
-  font-family: "Hind", sans-serif;
-  font-weight: 600;
-}
-
-.drinksCard{
+.drinks-card{
   transform-style: preserve-3d;
   transition: all 250ms ease-in-out;
+}
+
+.drinks-card h2, .drinks-card h3{
+  @apply font-semibold;
+  font-family: "Hind", sans-serif;
 }
 
 .flip{

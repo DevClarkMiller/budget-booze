@@ -2,15 +2,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 
 //Components
-import CardWrapper from "./mill-comps/components/CardWrapper";
+import CardWrapper from "../mill-comps/components/CardWrapper";
 import DrinksCard from "./DrinksCard";
-import NotFound from "./utilities/NotFound";
+import NotFound from "../utilities/NotFound";
 
 //Icons
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 //Context
-import { DrinksContext } from "./App";
+import { DrinksContext } from "../App";
 
 const DrinksView = ({drinkChunks}) =>{    
     const navigate = useNavigate();

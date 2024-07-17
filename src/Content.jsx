@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, Link} from "react-router-dom";
 
 //Components
 import CardWrapper from "./mill-comps/components/CardWrapper";
-import DrinksView from "./DrinksView";
+import DrinksView from "./Drink/DrinksView";
 import NotFound from "./utilities/NotFound";
 
 //Context
@@ -12,7 +12,7 @@ import { DrinksContext } from "./App";
 const Content = () =>{
     const navigate = useNavigate();
     const { drinksContent, setShowCombos } = useContext(DrinksContext);
-    const [chunksShown, setChunksShown] = useState(0);
+    //const [chunksShown, setChunksShown] = useState(0);
 
     const CHUNK_SIZE = 50;
 
@@ -26,7 +26,7 @@ const Content = () =>{
     useEffect(() =>{ setShowCombos(true); }, []);
 
     return(
-        <main className="flex flex-col items-center justify-center">
+        <main className="w-full col-flex-center justify-center">
             <Routes>
                 <Route path="/" element={
                 <div className="flex flex-col items-center justify-center w-full">

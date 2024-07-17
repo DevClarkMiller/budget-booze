@@ -34,7 +34,7 @@ module.exports = class BeerScraper extends Scraper {
             const browser = await puppeteer.launch({
                 headless: process.env.HEADLESS === "true",
                 defaultViewport: false,
-                //executablePath: process.env.CHROME_EXE,
+                executablePath: process.env.CHROME_EXE,
                 args: ["--no-sandbox", "--disable-setuid-sandbox", '--disable-notifications', '--disable-infobars', '--mute-audio']
             });
             

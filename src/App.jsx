@@ -17,11 +17,11 @@ function App() {
 
   const [rawDrinksContent, setRawDrinksContent] = useState(null);
   const [drinksContent, setDrinksContent] = useState(null);
-  const [showCombos, setShowCombos] = useState(false);
+  const [showCombos, setShowCombos] = useState(false);  //Handles whether the combo boxes should be displayed
 
   //Memoized functions
   const sortDrinks = useCallback((sortName) =>{
-    if(rawDrinksContent){
+    if(!rawDrinksContent) return;
       let tempDrinks = [...rawDrinksContent];
 
       switch(sortName){
@@ -38,26 +38,10 @@ function App() {
           tempDrinks.sort((drink1, drink2) =>{ return calcStandardPrice(drink1) - calcStandardPrice(drink2)});
           break;
       }
-      setDrinksContent(tempDrinks);
-    }
+    setDrinksContent(tempDrinks);
   }, [rawDrinksContent]);
 
-  /*
-    Upon page render, fetch all the drinks from backend
-  */
-    
-  useEffect(async () =>{
-    const data = await fetchGet('get/all');
-    setRawDrinksContent(data);
-  }, []);
-
-  
-  useEffect(() =>{ sortDrinks(currentSort); }, [rawDrinksContent, currentSort]);
-
-  // useEffect(() =>{ sortDrinks(currentSort); }, [currentSort]);
-
-
-  const handleCategoryChange = async (category) =>{
+  const handleCategoryChange = useCallback(async (category) =>{
     let data;
     //Does a different request to change the data depending on what the category is
     switch(category){
@@ -80,7 +64,21 @@ function App() {
       break;
     }
     setRawDrinksContent(data);
-  }
+  }, []);
+
+  /*
+    Upon page render, fetch all the drinks from backend
+  */
+    
+  useEffect(async () =>{
+    const data = await fetchGet('get/all');
+    setRawDrinksContent(data);
+  }, []);
+
+  
+  useEffect(() =>{ sortDrinks(currentSort); }, [rawDrinksContent, currentSort]);
+
+  // useEffect(() =>{ sortDrinks(currentSort); }, [currentSort]);
 
   return (
     <div className="App flex flex-col items-center min-h-screen	bg-orange-200">
