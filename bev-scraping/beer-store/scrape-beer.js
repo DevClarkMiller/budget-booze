@@ -1,3 +1,4 @@
+require('dotenv').config();
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
@@ -15,7 +16,7 @@ class BeerScraper {
         this.BASE_URL = 'https://www.thebeerstore.ca/beers?page=';
         this.TARGET_URL = 'https://qaht1ly72o-dsn.algolia.net/1/indexes/*/queries';
         this.DB_PATH = process.env.DB_PATH;
-        this.allBeers = [];
+        this.beers = [];
         this.rawBeers = [];
         this.pageIndex = 1;
     }
@@ -152,28 +153,29 @@ class BeerScraper {
                         store: "TBS"
                     }
 
-                    scraper.allBeers.push(beerObj);
+                    scraper.beers.push(beerObj);
                 }
             }
             resolve();
         });
     }
 
-    getNumBeers() {return this.allBeers.length}
+    getNumBeers() {return this.beers.length}
 
     createDB(){
+        let scraper = this;
         return new Promise((resolve, reject) =>{
-            const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, (err) =>{
+            const db = new sqlite3.Database(scraper.DB_PATH, sqlite3.OPEN_READWRITE, (err) =>{
                 if(err) return reject(err);
                 resolve(db);
             });
         });
     }
 
-    insertBevsToDB(){
+    insertBeersInDB(){
         //1. Get ref to this to access members
         let scraper = this;
-        
+
         //2. Create promise 
         return new Promise(async (resolve, reject) =>{
             try{
@@ -182,13 +184,15 @@ class BeerScraper {
 
                 console.log('Now going to insert all beers into the database');
 
+                //4. Open transaction
                 db.serialize(() => {
                     db.run("BEGIN TRANSACTION");
         
+                    //5. Insert each of the beers into the transaction
                     const sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link, store) VALUES (?,?,?,?,?,?,?,?,?,?)';
-                    let insertionPromises = bevs.map((bev) => {
+                    let insertionPromises = scraper.beers.map((beer) => {
                         return new Promise((resolve, reject) => {
-                            const params = [[bev.drink_name, bev.total_volume, bev.alcohol_percent, bev.category_ID, bev.pieces_per, bev.price, bev.image_url, dateISO, bev.link, store]];
+                            const params = [beer.drink_name, beer.total_volume, beer.alcohol_percent, beer.category_ID, beer.pieces_per, beer.price, beer.image_url, beer.date_ISO, beer.link, beer.store];
                             db.run(sql, params, (err) => {
                                 if (err) {
                                     console.error(err.message);
@@ -199,7 +203,8 @@ class BeerScraper {
                             });
                         });
                     });
-        
+
+                    //6. If all is well, commit transaction, if not then roll it back
                     Promise.all(insertionPromises)
                         .then(() => {
                             db.run("COMMIT", (err) => {
@@ -225,7 +230,7 @@ class BeerScraper {
                         });
                 });
             }catch(err){
-
+                console.error(err);
             }
         });
     }
@@ -246,7 +251,7 @@ const start = async () =>{
 
     //4. Push those beers to the database
     console.log('Step 4. Insert parsed beer data into the database');
-    await scraper.insertBevsToDB();
+    await scraper.insertBeersInDB();
 
     console.log(`ALL BEERS LENGTH: ${scraper.getNumBeers()}`);
 }
