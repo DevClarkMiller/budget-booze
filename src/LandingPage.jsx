@@ -14,7 +14,7 @@ const LandingPage = () =>{
 
                 <h3 className="text-5xl text-center">Take me to the</h3>
                 <CardWrapper className="w-fit" style={{backgroundColor: "#1B6EDA"}}>
-                    <Link to={'/0'} className="text-5xl text-white">booze! 🍺</Link>
+                    <Link to={'/drinks/0'} className="text-5xl text-white">booze! 🍺</Link>
                 </CardWrapper>
             </CardWrapper>  
         </div>

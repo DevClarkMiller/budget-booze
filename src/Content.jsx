@@ -30,13 +30,13 @@ const Content = () =>{
 
     const handleIncrementPage = (id) =>{
         if(parseInt(id) + 1 < drinkChunks.length){
-            navigate(`/${parseInt(id) + 1}`);
+            navigate(`/drinks/${parseInt(id) + 1}`);
         }
     }
 
     const handleDecrementPage = (id) =>{
         if(parseInt(id) - 1 >= 0){
-            navigate(`/${parseInt(id) - 1}`);
+            navigate(`/drinks/${parseInt(id) - 1}`);
         }
     }
 
@@ -45,7 +45,7 @@ const Content = () =>{
             <ContentContext.Provider value={{handleDecrementPage, handleIncrementPage}}>
                 <Routes>
                     <Route path="/" element={<LandingPage />}/>
-                    <Route path="/:id" element={<DrinksView drinkChunks={drinkChunks}/>}/>
+                    <Route path="/drinks/:id" element={<DrinksView drinkChunks={drinkChunks}/>}/>
                     <Route path="*" element ={<NotFound />}/>
                 </Routes>
             </ContentContext.Provider>
