@@ -3,13 +3,10 @@ const db = new sqlDB().createDB();
 let sql;
 
 const getSql = (categoryID) =>{
-    const BASE_SQL = `
-        WITH RankedItems AS (
-            SELECT *,
-                ROW_NUMBER() OVER (PARTITION BY link ORDER BY (SELECT NULL)) AS rn
-            FROM Drinks
-        )
-        SELECT DISTINCT
+    
+
+    return BASE_SQL = `
+        SELECT DISTINCT 
         d.id,
         d.drink_name,
         d.total_volume,
@@ -21,17 +18,17 @@ const getSql = (categoryID) =>{
         d.date_ISO,
         d.link,
         d.store
-        FROM RankedItems d
+        FROM Drinks d
         INNER JOIN Drink_Categories dc ON d.category_ID = dc.category_ID
-        WHERE rn = 1 AND d.pieces_per > 0 
-        AND d.date_ISO = date('now', 'localtime')
+        WHERE link IN (
+            SELECT MIN(link)
+            FROM Drinks
+            GROUP BY drink_name
+        )
+        AND date_ISO = date('now', 'localtime') 
+        ${categoryID&&"AND d.category_ID = " + categoryID}
+        ORDER BY drink_name;
     `
-    const ORDER_BY = 'ORDER BY d.price/d.pieces_per ASC;';
-
-    return (categoryID) ? 
-    `${BASE_SQL} AND dc.category_ID = ${categoryID} ${ORDER_BY}` 
-        :
-    `${BASE_SQL} ${ORDER_BY}`
 }
 
 const getAll = (req, res) =>{

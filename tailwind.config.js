@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily:{
+        hind: "Hind, sans-serif"
+      },
       colors: {
         beerOrange: "#F3B232",
         beerLightOrange: "#face78"

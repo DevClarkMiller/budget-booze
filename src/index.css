@@ -62,6 +62,14 @@
   .page-nav-btn{
     @apply card-btn hover-beer;
   }
+
+  .max-max{
+    @apply !max-h-max !max-w-max;
+  }
+
+  .hide{
+    @apply h-0 max-h-0 opacity-0;
+  }
 }
 
 body {

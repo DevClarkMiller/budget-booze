@@ -27,6 +27,7 @@ const DrinksCard = ({drink}) =>{
     return(
         <>
             {drink && <>
+                {/*Mobile View*/}
                 <CardWrapper className='drinks-card-mobile lg:hidden' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
                     <FlipCardFront />
                     <div className={`flippable-card-back justify-evenly ${flip&& "opacity-100"}`}>
@@ -35,7 +36,7 @@ const DrinksCard = ({drink}) =>{
                         <a className="drink-link" href={drink.link}>Take me to the drink</a> {/*Simulated Button*/}
                     </div>
                 </CardWrapper>
-                {/*Desktop view*/}
+                {/*Desktop View*/}
                 <CardWrapper href={drink.link} className='drinks-card-mobile hidden lg:flex' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
                     <FlipCardFront />
                     <div className={`flippable-card-back justify-center ${flip&& "opacity-100"}`}>
