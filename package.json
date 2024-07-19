@@ -12,6 +12,7 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.3.1",
     "react-icons": "^5.2.1",
+    "react-loading-icons": "^1.1.0",
     "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
     "react-social-media-embed": "^2.5.13",
@@ -23,7 +24,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start:dev": "env-cmd -f .env.development react-scripts start",
+    "start:prod": "env-cmd -f .env.production react-scripts start",
+    "build:dev": "env-cmd -f .env.development react-scripts build",
+    "build:prod": "env-cmd -f .env.production react-scripts build"
   },
   "eslintConfig": {
     "extends": [

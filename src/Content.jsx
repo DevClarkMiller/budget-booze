@@ -1,13 +1,16 @@
-import { useState, useEffect, useContext, useCallback, useMemo } from "react";
+import { useState, useEffect, useContext, useCallback, useMemo, createContext } from "react";
 import { Routes, Route, useNavigate, Link} from "react-router-dom";
 
 //Components
 import CardWrapper from "./mill-comps/components/CardWrapper";
 import DrinksView from "./Drink/DrinksView";
 import NotFound from "./utilities/NotFound";
+import NoDrinksLoaded from "./utilities/NoDrinksLoaded";
+import LandingPage from "./LandingPage";
 
 //Context
 import { DrinksContext } from "./App";
+export const ContentContext = createContext();
 
 const Content = () =>{
     const navigate = useNavigate();
@@ -25,30 +28,27 @@ const Content = () =>{
 
     useEffect(() =>{ setShowCombos(true); }, []);
 
+    const handleIncrementPage = (id) =>{
+        if(parseInt(id) + 1 < drinkChunks.length){
+            navigate(`/${parseInt(id) + 1}`);
+        }
+    }
+
+    const handleDecrementPage = (id) =>{
+        if(parseInt(id) - 1 >= 0){
+            navigate(`/${parseInt(id) - 1}`);
+        }
+    }
+
     return(
-        <main className="w-full col-flex-center justify-center">
-            <Routes>
-                <Route path="/" element={
-                <div className="flex flex-col items-center justify-center w-full">
-                    <CardWrapper className="w-3/4 flex flex-col items-center gap-5">
-                        <span className="flex flex-col items-center pb-5 pt-5 border-b-2 border-black gap-5 w-3/4 text-center ">
-                            <h2 className="text-5xl moul">Budget booze</h2>
-                            <p className="text-3xl">The best web-app for saving money while getting drunk. Warning ⚠️ - site owner is not responsible for blacked out antics</p>
-                        </span>
- 
-                        <h3 className="text-5xl text-center">Take me to the</h3>
-                        <CardWrapper className="w-fit" style={{backgroundColor: "#1B6EDA"}}>
-                            <Link to={'/0'} className="text-5xl text-white">booze! 🍺</Link>
-                        </CardWrapper>
-                    </CardWrapper>
-                    
-                </div>}
-                />
-                {
-                    drinkChunks && <Route path="/:id" element={<DrinksView drinkChunks={drinkChunks}/>}/>
-                }
-                <Route path="*" element ={<NotFound />}/>
-            </Routes>
+        <main className="size-full col-flex-center justify-center flex-grow">    
+            <ContentContext.Provider value={{handleDecrementPage, handleIncrementPage}}>
+                <Routes>
+                    <Route path="/" element={<LandingPage />}/>
+                    <Route path="/:id" element={<DrinksView drinkChunks={drinkChunks}/>}/>
+                    <Route path="*" element ={<NotFound />}/>
+                </Routes>
+            </ContentContext.Provider>
         </main>
     );
 }

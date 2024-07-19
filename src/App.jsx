@@ -81,7 +81,7 @@ function App() {
   // useEffect(() =>{ sortDrinks(currentSort); }, [currentSort]);
 
   return (
-    <div className="App flex flex-col items-center min-h-screen	bg-orange-200">
+    <div className="App col-flex-center min-h-screen bg-orange-200">
       <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setShowCombos}}>
         <Header setCurrentSort={setCurrentSort} showCombos={showCombos} setShowCombos={setShowCombos}/>
         <Routes>
