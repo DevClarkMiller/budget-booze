@@ -17,7 +17,6 @@ function App() {
 
   const [rawDrinksContent, setRawDrinksContent] = useState(null);
   const [drinksContent, setDrinksContent] = useState(null);
-  const [showCombos, setShowCombos] = useState(false);  //Handles whether the combo boxes should be displayed
 
   //Memoized functions
   const sortDrinks = useCallback((sortName) =>{
@@ -82,11 +81,11 @@ function App() {
 
   return (
     <div className="App col-flex-center min-h-screen bg-orange-200">
-      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setShowCombos}}>
-        <Header setCurrentSort={setCurrentSort} showCombos={showCombos} setShowCombos={setShowCombos}/>
+      <DrinksContext.Provider value={{drinksContent, handleCategoryChange}}>
+        <Header setCurrentSort={setCurrentSort}/>
         <Routes>
             <Route path="/*" element={<Content />}/>
-            <Route path="/about" element={<About setShowCombos={setShowCombos} />}/>
+            <Route path="/about" element={<About />}/>
             <Route path="*" element={<NotFound />}/>
         </Routes>
       </DrinksContext.Provider>

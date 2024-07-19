@@ -14,7 +14,7 @@ export const ContentContext = createContext();
 
 const Content = () =>{
     const navigate = useNavigate();
-    const { drinksContent, setShowCombos } = useContext(DrinksContext);
+    const { drinksContent } = useContext(DrinksContext);
     //const [chunksShown, setChunksShown] = useState(0);
 
     const CHUNK_SIZE = 50;
@@ -25,8 +25,6 @@ const Content = () =>{
         return Array.from({ length: Math.ceil(drinksContent.length / CHUNK_SIZE) }, (_, i) =>
             drinksContent.slice(i * CHUNK_SIZE, i * CHUNK_SIZE + CHUNK_SIZE));
     }, [drinksContent]);
-
-    useEffect(() =>{ setShowCombos(true); }, []);
 
     const handleIncrementPage = (id) =>{
         if(parseInt(id) + 1 < drinkChunks.length){

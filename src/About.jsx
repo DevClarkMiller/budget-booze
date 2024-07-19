@@ -8,8 +8,7 @@ import { ShakeLittle } from "reshake";
 import { FaGithubSquare , FaLinkedin  } from "react-icons/fa";
 
 
-const About = ({setShowCombos}) => {
-    useEffect(() =>{ setShowCombos(false); }, []);
+const About = ({}) => {
 
     return(
         <div className="aboutPage min-h-screen p-3 flex flex-col gap-5">

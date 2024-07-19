@@ -42,7 +42,7 @@ const DrinksView = ({drinkChunks}) =>{
                 </div>
             </>}
             {!chunk && <div className="size-full col-flex-center p-5">
-                <LoadingIcons.SpinningCircles stroke="#98ff98" strokeOpacity={.125} speed={1.5}  className="size-1/4"/>
+                <LoadingIcons.SpinningCircles strokeOpacity={.125} speed={1.5}  className="size-1/4"/>
             </div>}
         </>   
     );
