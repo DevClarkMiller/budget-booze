@@ -2,13 +2,11 @@ import { useContext, useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 //Components
-import CardWrapper from "../mill-comps/components/CardWrapper";
-import DrinksCard from "./DrinksCard";
-import NotFound from "../utilities/NotFound";
+import AsideMenu from '../AsideMenu'
 import LoadingIcons from 'react-loading-icons'
+import DrinksList from "./DrinksList";
 
-//Icons
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+
 
 //Context
 import { DrinksContext } from "../App";
@@ -19,32 +17,25 @@ const DrinksView = ({drinkChunks}) =>{
 
     const {id} = useParams();
 
+    
+
     //Memoized values
     const chunk = useMemo(() =>{
         if(!drinkChunks || !id) return;
         return drinkChunks[parseInt(id)];
     }, [drinkChunks, id]);
 
-    //Context
-    const {handleDecrementPage, handleIncrementPage} = useContext(ContentContext);
-
     return(
-        <>
-            {chunk &&<>
-                <div className="drinksView flex flex-row justify-center flex-wrap">
-                    {chunk?.map((drink) =>(
-                        <DrinksCard key={`${drink.drink_name}|${drink.id}`} drink={drink}/>
-                    ))}   
-                </div>
-                <div className="flex flex-row justify-center gap-2 mb-3">
-                    <button className="page-nav-btn row-flex-center items-center text-2xl" onClick={() => handleDecrementPage(id)}><FaArrowLeft /></button>
-                    <button className="page-nav-btn row-flex-center items-center text-2xl" onClick={() => handleIncrementPage(id)}><FaArrowRight /></button>
-                </div>
-            </>}
+        <div className="size-full col-flex-center gap-0">
+            {chunk&&<div className="size-full row-flex-center">
+                <AsideMenu className={`w-1/3`} />
+                <DrinksList chunk={chunk} id={id} className={`w-2/3`} />
+            </div>}
+            
             {!chunk && <div className="size-full col-flex-center p-5">
                 <LoadingIcons.SpinningCircles strokeOpacity={.125} speed={1.5}  className="size-1/4"/>
             </div>}
-        </>   
+        </div>   
     );
 }
 

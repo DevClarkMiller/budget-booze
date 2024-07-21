@@ -17,7 +17,7 @@ const Content = () =>{
     const { drinksContent } = useContext(DrinksContext);
     //const [chunksShown, setChunksShown] = useState(0);
 
-    const CHUNK_SIZE = 50;
+    const CHUNK_SIZE = 35;
 
     //Memos
     const drinkChunks = useMemo(() =>{

@@ -1,11 +1,12 @@
-import { createContext, useState, useEffect, useCallback } from 'react'
-import { Routes, Route } from "react-router-dom";
+import { createContext, useState, useEffect, useCallback, useMemo, useContext } from 'react'
+import { Routes, Route, useLocation } from "react-router-dom";
 
 //Components
 import NotFound from "./utilities/NotFound";
 import Content from "./Content";
 import Header from "./Header";
 import About from "./About";
+import Menu from './Menu';
 
 //Functions
 import { fetchGet } from "./functions/fetch"
@@ -13,10 +14,17 @@ import { calcStandardPrice, calcStandard } from "./functions/drinkCalcs";
 
 export const DrinksContext = createContext();
 function App() {
+  const location = useLocation();
+
   const [currentSort, setCurrentSort] = useState('standardPrice');
 
   const [rawDrinksContent, setRawDrinksContent] = useState(null);
   const [drinksContent, setDrinksContent] = useState(null);
+
+  const [asideActive, setAsideActive] = useState(false);
+
+  //Memoized values
+  const showCombos = useMemo(() =>( !(location?.pathname.includes("about") || location?.pathname === "/")), [location?.pathname]);
 
   //Memoized functions
   const sortDrinks = useCallback((sortName) =>{
@@ -77,12 +85,11 @@ function App() {
   
   useEffect(() =>{ sortDrinks(currentSort); }, [rawDrinksContent, currentSort]);
 
-  // useEffect(() =>{ sortDrinks(currentSort); }, [currentSort]);
-
   return (
     <div className="App col-flex-center min-h-screen bg-orange-200">
-      <DrinksContext.Provider value={{drinksContent, handleCategoryChange}}>
-        <Header setCurrentSort={setCurrentSort}/>
+      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive}}>
+        <Header />
+        <Menu />
         <Routes>
             <Route path="/*" element={<Content />}/>
             <Route path="/about" element={<About />}/>

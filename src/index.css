@@ -85,10 +85,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
+/* 
 .App{
   background-image: linear-gradient(to bottom, rgb(240, 213, 181), rgb(241, 180, 109), rgb(226, 144, 50), rgb(241, 180, 109), rgb(240, 213, 181));
-}
+} */
 
 .drinks-card{
   transform-style: preserve-3d;

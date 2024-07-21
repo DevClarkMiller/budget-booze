@@ -28,7 +28,7 @@ const DrinksCard = ({drink}) =>{
         <>
             {drink && <>
                 {/*Mobile View*/}
-                <CardWrapper className='drinks-card-mobile lg:hidden container' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
+                <CardWrapper className='drinks-card-mobile lg:hidden shadow-md' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
                     <FlipCardFront />
                     <div className={`flippable-card-back justify-evenly ${flip&& "opacity-100"}`}>
                         <h2>{volumeDisplay}</h2>
@@ -37,7 +37,7 @@ const DrinksCard = ({drink}) =>{
                     </div>
                 </CardWrapper>
                 {/*Desktop View*/}
-                <CardWrapper href={drink.link} className='drinks-card-mobile hidden lg:flex' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
+                <CardWrapper href={drink.link} className='drinks-card-mobile hidden lg:flex shadow-md' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
                     <FlipCardFront />
                     <div className={`flippable-card-back justify-center ${flip&& "opacity-100"}`}>
                         <h2>{(drink.pieces_per > 1) ? `${drink.pieces_per} x ${drink.total_volume} ml` : `${drink.total_volume} ml`}</h2>
