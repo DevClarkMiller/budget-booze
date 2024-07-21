@@ -121,3 +121,8 @@ header h1{
 .moul{
   font-family: "Moul", serif;
 }
+
+.container{
+  @apply rounded-lg;
+  box-shadow: 1px 1px 8px rgba(0, 0, 10, 0.497);
+}

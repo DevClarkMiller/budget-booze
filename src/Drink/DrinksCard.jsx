@@ -28,7 +28,7 @@ const DrinksCard = ({drink}) =>{
         <>
             {drink && <>
                 {/*Mobile View*/}
-                <CardWrapper className='drinks-card-mobile lg:hidden' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
+                <CardWrapper className='drinks-card-mobile lg:hidden container' onMouseLeave={() => setFlip(false)} onMouseEnter={() => setFlip(true)}>
                     <FlipCardFront />
                     <div className={`flippable-card-back justify-evenly ${flip&& "opacity-100"}`}>
                         <h2>{volumeDisplay}</h2>

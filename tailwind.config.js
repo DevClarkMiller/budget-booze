@@ -7,7 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily:{
-        hind: "Hind, sans-serif"
+        hind: "Hind, sans-serif",
+        Moul: "Moul, sans-serif"
       },
       colors: {
         beerOrange: "#F3B232",
