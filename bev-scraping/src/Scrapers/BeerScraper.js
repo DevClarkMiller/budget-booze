@@ -47,9 +47,14 @@ module.exports = class BeerScraper extends Scraper {
             const currentUserAgent = await page.evaluate(() => navigator.userAgent);
             console.log('Current User-Agent:', currentUserAgent);
         
+            
             await page.evaluateOnNewDocument((coords) => {
                 navigator.geolocation.getCurrentPosition = (cb) => {
                 setTimeout(() => { cb(coords) }, 1000)}
+                //Then also click the toggle for in stock near you
+                const stockSwitch = document.getElementById("whatsnew");
+                if(stockSwitch.date-state === "unchecked")
+                    stockSwitch.click();
             }, this.COORDS);
         
             page.on('response', async (response) =>{
