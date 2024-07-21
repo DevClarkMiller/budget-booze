@@ -3,9 +3,9 @@ const db = new sqlDB().createDB();
 let sql;
 
 const getSql = (categoryID) =>{
-    
+    const CATEGORY_CONDITION = categoryID ? `AND d.category_ID = ${categoryID}` : "";
 
-    return BASE_SQL = `
+    return `
         SELECT DISTINCT 
         d.id,
         d.drink_name,
@@ -26,7 +26,7 @@ const getSql = (categoryID) =>{
             GROUP BY drink_name
         )
         AND date_ISO = date('now', 'localtime') 
-        ${categoryID&&"AND d.category_ID = " + categoryID}
+        ${CATEGORY_CONDITION}
         ORDER BY drink_name;
     `
 }
