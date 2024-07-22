@@ -16,11 +16,9 @@ const LandingPage = () =>{
 
     return(
         <div className="size-full grid grid-cols-2 grid-rows-2 flex-grow p-5 gap-3">
-            <Quadrant>
-                <button className="card-btn nice-trans bg-beerOrange hover:bg-beerLightOrange text-white" onClick={() => navigate('/drinks/0')}>
-                    <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">Take me to the booze! 🍺</h2>
-                </button>
-            </Quadrant>
+            <button className="card-btn nice-trans container !rounded-none bg-beerOrange hover:bg-beerLightOrange text-white" onClick={() => navigate('/drinks/0')}>
+                <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">Take me to the booze! 🍺</h2>
+            </button>
             <Quadrant>
                 <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">Over 6000 drinks processed daily!</h2>
             </Quadrant>

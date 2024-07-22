@@ -20,9 +20,8 @@ const Menu = () =>{
     return (
         <div className={`selects nice-trans w-2/3 flex justify-between lg:justify-end items-center gap-1 border-t border-black pt-2 mb-2 ${showCombos&& "opacity-100"} ${!showCombos&& "hide"}`}>
             {!isDesktopOrLaptop&&
-            <button onClick={() => setAsideActive(true)} className="nice-trans hover:text-appleBlue text-2xl"><RxHamburgerMenu /></button>
+                <button onClick={() => setAsideActive(true)} className="nice-trans hover:text-appleBlue text-3xl"><RxHamburgerMenu /></button>
             }
-
             {setCurrentSort&&isDesktopOrLaptop&&<SelectSort />}
         </div>
     );
