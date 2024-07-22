@@ -13,7 +13,8 @@ module.exports = {
       colors: {
         beerOrange: "#F3B232",
         beerLightOrange: "#face78",
-        microsoftGray: "#F2F2F2"
+        microsoftGray: "#F2F2F2",
+        appleBlue: "#0077ED"
       }
     },
   },

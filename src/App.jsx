@@ -23,6 +23,8 @@ function App() {
 
   const [asideActive, setAsideActive] = useState(false);
 
+  const [currentCategory, setCurrentCategory] = useState("All");
+
   //Memoized values
   const showCombos = useMemo(() =>( !(location?.pathname.includes("about") || location?.pathname === "/")), [location?.pathname]);
 
@@ -87,7 +89,7 @@ function App() {
 
   return (
     <div className="App col-flex-center min-h-screen bg-orange-200">
-      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive}}>
+      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive, currentCategory, setCurrentCategory}}>
         <Header />
         <Menu />
         <Routes>

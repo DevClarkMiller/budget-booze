@@ -28,7 +28,7 @@ const DrinksView = ({drinkChunks}) =>{
     return(
         <div className="size-full col-flex-center gap-0">
             {chunk&&<div className="size-full row-flex-center">
-                <AsideMenu className={`w-1/3`} />
+                <AsideMenu className={`w-fit`} />
                 <DrinksList chunk={chunk} id={id} className={`w-2/3`} />
             </div>}
             

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState, useMemo } from "react";
 import { useMediaQuery } from "react-responsive";
 
 //Components
@@ -8,6 +8,37 @@ import "react-sliding-pane/dist/react-sliding-pane.css";
 
 //Context
 import { DrinksContext } from "./App";
+
+const CategorieBtn = (props) =>{
+    const {handleCategoryChange, currentCategory, setCurrentCategory} = useContext(DrinksContext);
+
+    const isActive = useMemo(() => currentCategory === props.value, [currentCategory])
+
+    const handleClick = () =>{
+        setCurrentCategory(props.value);
+        handleCategoryChange(props.value)
+    }
+    
+    return(
+        <li><button className={`nice-trans ${isActive&&"text-appleBlue"}`} onClick={handleClick}>{props.children}</button></li>
+    );
+}
+
+const CategoriesSection = (props) =>{
+    return(
+        <div className={`categoriesSection ${props.className}`}>
+            <h2 className={`font-semibold border-b border-black mb-3`}>Categories</h2>
+
+            <ul className="flex flex-col gap-1">
+                <CategorieBtn value="All">Everything</CategorieBtn>
+                <CategorieBtn value="Spirit">Spirits</CategorieBtn>
+                <CategorieBtn value="BeerCider">Beer and Cider</CategorieBtn>
+                <CategorieBtn value="Wine">Wine</CategorieBtn>
+                <CategorieBtn value="Cooler">Coolers</CategorieBtn>
+            </ul>
+        </div>
+    );
+}
 
 const AsideMenu = (props) =>{
     const {handleCategoryChange, showCombos, asideActive, setAsideActive} = useContext(DrinksContext);
@@ -19,18 +50,8 @@ const AsideMenu = (props) =>{
     const checkClosePane = () =>{ if(!isDesktopOrLaptop) setAsideActive(false); }
 
     return(
-        <aside className={`col-flex-center size-full ${props.className}`}>
-            {handleCategoryChange&&
-            <CardWrapper className={`flex container gap-1 h-full w-fit items-center border !p-2 ${showCombos&& "opacity-100"} ${!showCombos&& "hide"}`}>
-                <h2 className="font-hind font-semibold">Category</h2>
-                <select className="border rounded-lg p-1" onChange={(e) => handleCategoryChange(e.target.value)}>
-                    <option value={"All"}>All</option>
-                    <option value={"Spirit"}>Spirits</option>
-                    <option value={"BeerCider"}>Beer & Cider</option>
-                    <option value={"Wine"}>Wine</option>
-                    <option value={"Cooler"}>Coolers</option>
-                </select>
-            </CardWrapper>}
+        <aside className={`flex flex-col size-full bg-white rounded-md ml-5 p-5 ${props.className}`}>
+            {handleCategoryChange&&<CategoriesSection />}
         </aside>
     );
 }
