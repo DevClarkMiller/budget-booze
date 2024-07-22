@@ -3,7 +3,7 @@ import { useContext, useMemo } from "react";
 //Context
 import { DrinksContext } from "../App";
 
-const CategorieBtn = (props) =>{
+const CategoriesBtn = (props) =>{
     const {handleCategoryChange, currentCategory, setCurrentCategory} = useContext(DrinksContext);
 
     const isActive = useMemo(() => currentCategory === props.value, [currentCategory])
@@ -18,4 +18,4 @@ const CategorieBtn = (props) =>{
     );
 }
 
-export default CategorieBtn;
+export default CategoriesBtn;

@@ -1,5 +1,5 @@
 //Components
-import CategorieBtn from "./CategoriesBtn";
+import CategoriesBtn from "./CategoriesBtn";
 
 const CategoriesSection = (props) =>{
     return(
@@ -7,11 +7,11 @@ const CategoriesSection = (props) =>{
             <h2 className={`font-semibold border-b border-black mb-3`}>Categories</h2>
 
             <ul className="flex flex-col gap-1">
-                <CategorieBtn value="All">Everything</CategorieBtn>
-                <CategorieBtn value="Spirit">Spirits</CategorieBtn>
-                <CategorieBtn value="BeerCider">Beers/Ciders</CategorieBtn>
-                <CategorieBtn value="Wine">Wine</CategorieBtn>
-                <CategorieBtn value="Cooler">Coolers</CategorieBtn>
+                <CategoriesBtn value="All">Everything</CategoriesBtn>
+                <CategoriesBtn value="Spirit">Spirits</CategoriesBtn>
+                <CategoriesBtn value="BeerCider">Beers/Ciders</CategoriesBtn>
+                <CategoriesBtn value="Wine">Wine</CategoriesBtn>
+                <CategoriesBtn value="Cooler">Coolers</CategoriesBtn>
             </ul>
         </div>
     );

@@ -8,6 +8,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.2",
+    "env-cmd": "^10.1.0",
     "react": "^18.3.1",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.3.1",
@@ -31,7 +32,8 @@
     "start:dev": "env-cmd -f .env.development react-scripts start",
     "start:prod": "env-cmd -f .env.production react-scripts start",
     "build:dev": "env-cmd -f .env.development react-scripts build",
-    "build:prod": "env-cmd -f .env.production react-scripts build"
+    "build:prod": "env-cmd -f .env.production react-scripts build",
+    "push-build": "scp -r C:\\projects\\ontario-goon\\build\\* clark@167.99.10.95:/var/www/budgetbooze.ca/html/"
   },
   "eslintConfig": {
     "extends": [
