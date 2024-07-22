@@ -1,10 +1,7 @@
 import { useContext, useMemo } from "react";
-import { useLocation } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 
 //Components
-import CardWrapper from "./mill-comps/components/CardWrapper";
-import Select from 'react-select';
 import SelectSort from "./Categories/SelectSort";
 
 //Icons
@@ -14,8 +11,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { DrinksContext } from "./App";
 
 const Menu = () =>{
-    const location = useLocation();
-    const { setCurrentSort, showCombos, asideActive, setAsideActive } = useContext(DrinksContext);
+    const { showCombos, setAsideActive, setCurrentSort } = useContext(DrinksContext);
 
     const isDesktopOrLaptop = useMediaQuery({
         query: '(min-width: 1080px)'
@@ -27,7 +23,7 @@ const Menu = () =>{
             <button onClick={() => setAsideActive(true)} className="nice-trans hover:text-appleBlue text-2xl"><RxHamburgerMenu /></button>
             }
 
-            {/* {setCurrentSort&&<SelectSort />} */}
+            {setCurrentSort&&isDesktopOrLaptop&&<SelectSort />}
         </div>
     );
 }

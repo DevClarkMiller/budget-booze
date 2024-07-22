@@ -17,7 +17,7 @@ const DrinksCard = ({drink}) =>{
                     <h3 className={`${logoColour}`}>{drink.store}</h3>
                     <h2 className="flex-grow text-one-line">{drink.drink_name}</h2>
                 </div>
-                <img loading="lazy" src={drink.image_url}></img>
+                <img loading="lazy" src={drink.image_url} alt={`${drink.drink_name} preview`}></img>
                 <span className="flex flex-row justify-between w-full"><h2>${formattedPrice}</h2><h2>{drink.alcohol_percent}%</h2> </span>
             </div>
         );

@@ -1,24 +1,39 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-//Components
-import CardWrapper from "./mill-comps/components/CardWrapper";
+//Images
+import MeBoozing from './images/Boozer.jpeg';
 
 const LandingPage = () =>{
-    return(
-        <div className="flex flex-col items-center justify-center w-full">
-            <CardWrapper className="w-3/4 flex flex-col items-center gap-5">
-                <span className="flex flex-col items-center pb-5 pt-5 border-b-2 border-black gap-5 w-3/4 text-center ">
-                    <h2 className="text-5xl moul">Budget booze</h2>
-                    <p className="text-3xl">The best web-app for saving money while getting drunk. Warning ⚠️ - site owner is not responsible for blacked out antics</p>
-                </span>
+    const navigate = useNavigate();
 
-                <h3 className="text-5xl text-center">Take me to the</h3>
-                <CardWrapper className="w-fit" style={{backgroundColor: "#1B6EDA"}}>
-                    <Link to={'/drinks/0'} className="text-5xl text-white">booze! 🍺</Link>
-                </CardWrapper>
-            </CardWrapper>  
+    const Quadrant = (props) =>{
+        return(
+            <div className={`size-full bg-white p-2 container !rounded-none col-flex-center justify-center overflow-hidden ${props.className}`}>
+                {props.children}
+            </div>
+        );
+    }
+
+    return(
+        <div className="size-full grid grid-cols-2 grid-rows-2 flex-grow p-5 gap-3">
+            <Quadrant>
+                <button className="card-btn nice-trans bg-beerOrange hover:bg-beerLightOrange text-white" onClick={() => navigate('/drinks/0')}>
+                    <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">Take me to the booze! 🍺</h2>
+                </button>
+            </Quadrant>
+            <Quadrant>
+                <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">Over 6000 drinks processed daily!</h2>
+            </Quadrant>
+            <Quadrant>
+                <p className="text-center text-xl md:text-2xl">Your center for drinking on a budget, the last and only web-app you'll need for drinking on a budget</p>
+                <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis"></h2>
+            </Quadrant>
+            <Quadrant className="lg:flex-row gap-3 justify-between">
+                <h2 className="w-2/3 font-semibold text-1xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">The results speak for themselves</h2>
+                <img className="w-5/6 md:w-1/2 lg:w-1/4" src={MeBoozing}></img>
+            </Quadrant>
         </div>
-    );
+    )
 }
 
 export default LandingPage;

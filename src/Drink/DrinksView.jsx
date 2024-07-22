@@ -1,5 +1,5 @@
-import { useContext, useState, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 
 //Components
 import AsideMenu from '../AsideMenu'
@@ -7,11 +7,10 @@ import LoadingIcons from 'react-loading-icons'
 import DrinksList from "./DrinksList";
 
 //Context
-import { DrinksContext } from "../App";
-import { ContentContext } from "../Content";
+// import { DrinksContext } from "../App";
+// import { ContentContext } from "../Content";
 
 const DrinksView = ({drinkChunks, chunkCount}) =>{    
-    const navigate = useNavigate();
 
     const {id} = useParams();
 
@@ -23,7 +22,7 @@ const DrinksView = ({drinkChunks, chunkCount}) =>{
 
     return(
         <div className="size-full col-flex-center gap-0">  
-            {chunk&&<div className="size-full row-flex-center">
+            {chunk&&<div className="size-full row-flex-center min-h-screen">
                 <AsideMenu className={`w-fit hidden lg:flex`} />
                 <DrinksList chunk={chunk} id={id} className={`w-full lg:w-2/3`} chunkCount={chunkCount} />
             </div>}

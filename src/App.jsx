@@ -23,7 +23,7 @@ function App() {
   const [rawDrinksContent, setRawDrinksContent] = useState(null);
   const [drinksContent, setDrinksContent] = useState(null);
 
-  const [asideActive, setAsideActive] = useState(true);
+  const [asideActive, setAsideActive] = useState(false);
 
   const [currentCategory, setCurrentCategory] = useState("All");
 
