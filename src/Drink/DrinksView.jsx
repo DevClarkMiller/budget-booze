@@ -12,12 +12,10 @@ import DrinksList from "./DrinksList";
 import { DrinksContext } from "../App";
 import { ContentContext } from "../Content";
 
-const DrinksView = ({drinkChunks}) =>{    
+const DrinksView = ({drinkChunks, chunkCount}) =>{    
     const navigate = useNavigate();
 
     const {id} = useParams();
-
-    
 
     //Memoized values
     const chunk = useMemo(() =>{
@@ -26,10 +24,10 @@ const DrinksView = ({drinkChunks}) =>{
     }, [drinkChunks, id]);
 
     return(
-        <div className="size-full col-flex-center gap-0">
+        <div className="size-full col-flex-center gap-0">  
             {chunk&&<div className="size-full row-flex-center">
                 <AsideMenu className={`w-fit`} />
-                <DrinksList chunk={chunk} id={id} className={`w-2/3`} />
+                <DrinksList chunk={chunk} id={id} className={`w-2/3`} chunkCount={chunkCount} />
             </div>}
             
             {!chunk && <div className="size-full col-flex-center p-5">

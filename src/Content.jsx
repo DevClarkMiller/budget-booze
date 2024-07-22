@@ -43,7 +43,7 @@ const Content = () =>{
             <ContentContext.Provider value={{handleDecrementPage, handleIncrementPage}}>
                 <Routes>
                     <Route path="/" element={<LandingPage />}/>
-                    <Route path="/drinks/:id" element={<DrinksView drinkChunks={drinkChunks}/>}/>
+                    <Route path="/drinks/:id" element={<DrinksView drinkChunks={drinkChunks} chunkCount={drinkChunks?.length} />}/>
                     <Route path="*" element ={<NotFound />}/>
                 </Routes>
             </ContentContext.Provider>

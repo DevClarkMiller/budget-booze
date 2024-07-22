@@ -91,6 +91,7 @@ code {
 } */
 
 .drinks-card{
+  @apply !m-0;
   transform-style: preserve-3d;
   transition: all 250ms ease-in-out;
 }

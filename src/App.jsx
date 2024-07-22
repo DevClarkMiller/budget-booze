@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useCallback, useMemo, useContext } from 'react'
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
 //Components
 import NotFound from "./utilities/NotFound";
@@ -14,6 +14,7 @@ import { calcStandardPrice, calcStandard } from "./functions/drinkCalcs";
 
 export const DrinksContext = createContext();
 function App() {
+  const navigate = useNavigate();
   const location = useLocation();
 
   const [currentSort, setCurrentSort] = useState('standardPrice');
@@ -72,7 +73,9 @@ function App() {
       default: 
       break;
     }
+    if(!data) return;
     setRawDrinksContent(data);
+    navigate('/drinks/0');
   }, []);
 
   /*
