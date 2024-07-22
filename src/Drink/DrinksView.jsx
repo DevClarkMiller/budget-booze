@@ -6,8 +6,6 @@ import AsideMenu from '../AsideMenu'
 import LoadingIcons from 'react-loading-icons'
 import DrinksList from "./DrinksList";
 
-
-
 //Context
 import { DrinksContext } from "../App";
 import { ContentContext } from "../Content";
@@ -26,8 +24,8 @@ const DrinksView = ({drinkChunks, chunkCount}) =>{
     return(
         <div className="size-full col-flex-center gap-0">  
             {chunk&&<div className="size-full row-flex-center">
-                <AsideMenu className={`w-fit`} />
-                <DrinksList chunk={chunk} id={id} className={`w-2/3`} chunkCount={chunkCount} />
+                <AsideMenu className={`w-fit hidden lg:flex`} />
+                <DrinksList chunk={chunk} id={id} className={`w-full lg:w-2/3`} chunkCount={chunkCount} />
             </div>}
             
             {!chunk && <div className="size-full col-flex-center p-5">

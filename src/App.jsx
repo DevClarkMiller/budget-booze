@@ -7,6 +7,7 @@ import Content from "./Content";
 import Header from "./Header";
 import About from "./About";
 import Menu from './Menu';
+import MobileAsideMenu from './MobileAsideMenu';
 
 //Functions
 import { fetchGet } from "./functions/fetch"
@@ -22,7 +23,7 @@ function App() {
   const [rawDrinksContent, setRawDrinksContent] = useState(null);
   const [drinksContent, setDrinksContent] = useState(null);
 
-  const [asideActive, setAsideActive] = useState(false);
+  const [asideActive, setAsideActive] = useState(true);
 
   const [currentCategory, setCurrentCategory] = useState("All");
 
@@ -51,7 +52,7 @@ function App() {
     setDrinksContent(tempDrinks);
   }, [rawDrinksContent]);
 
-  const handleCategoryChange = useCallback(async (category) =>{
+  const handleCategoryChange = async (category) =>{
     let data;
     //Does a different request to change the data depending on what the category is
     switch(category){
@@ -76,17 +77,20 @@ function App() {
     if(!data) return;
     setRawDrinksContent(data);
     navigate('/drinks/0');
-  }, []);
+  };
 
   /*
     Upon page render, fetch all the drinks from backend
   */
-    
-  useEffect(async () =>{
-    const data = await fetchGet('get/all');
-    setRawDrinksContent(data);
-  }, []);
 
+  useEffect(async () =>{
+    const fetchAll = async ()=>{
+      const data = await fetchGet('get/all');
+      setRawDrinksContent(data);
+    }
+
+    fetchAll();
+  }, []);
   
   useEffect(() =>{ sortDrinks(currentSort); }, [rawDrinksContent, currentSort]);
 
@@ -95,6 +99,7 @@ function App() {
       <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive, currentCategory, setCurrentCategory}}>
         <Header />
         <Menu />
+        <MobileAsideMenu />
         <Routes>
             <Route path="/*" element={<Content />}/>
             <Route path="/about" element={<About />}/>

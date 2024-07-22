@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from "react";
-import { isMobile } from "react-device-detect";
 
 //Components
 import CardWrapper from "../mill-comps/components/CardWrapper";

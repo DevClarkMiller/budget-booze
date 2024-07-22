@@ -63,6 +63,10 @@
     @apply card-btn hover-beer;
   }
 
+  .disabled-nav-btn{
+    @apply card-btn text-gray-500;
+  }
+
   .max-max{
     @apply !max-h-max !max-w-max;
   }

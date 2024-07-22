@@ -15,7 +15,7 @@ const DrinksList = (props) =>{
 
     const pageDetails = useMemo(() =>({
         hasNextPage: (props?.id + 1 < props.chunkCount),
-        hasPrevPage: (props?.id - 1 > 0)
+        hasPrevPage: (props?.id - 1 >= 0)
     }), [props?.id, props?.chunkCount]);
 
     return(
@@ -27,8 +27,8 @@ const DrinksList = (props) =>{
             </div>
 
             <div className="flex flex-row justify-center gap-2 mb-3">
-                <button disabled={!pageDetails?.hasPrevPage} className={`page-nav-btn row-flex-center items-center text-2xl`} onClick={() => handleDecrementPage(props.id)}><FaArrowLeft /></button>
-                <button className="page-nav-btn row-flex-center items-center text-2xl" onClick={() => handleIncrementPage(props.id)}><FaArrowRight /></button>
+                <button disabled={!pageDetails?.hasPrevPage} className={`${pageDetails.hasPrevPage ? "page-nav-btn" : "disabled-nav-btn"} row-flex-center items-center text-2xl`} onClick={() => handleDecrementPage(props.id)}><FaArrowLeft /></button>
+                <button disabled={!pageDetails?.hasNextPage} className={`${pageDetails.hasNextPage ? "page-nav-btn" : "disabled-nav-btn"} row-flex-center items-center text-2xl`} onClick={() => handleIncrementPage(props.id)}><FaArrowRight /></button>
             </div>
         </div>
     );
