@@ -14,27 +14,17 @@ export const ContentContext = createContext();
 
 const Content = () =>{
     const navigate = useNavigate();
-    const { drinksContent } = useContext(DrinksContext);
-    //const [chunksShown, setChunksShown] = useState(0);
-
-    const CHUNK_SIZE = 35;
-
-    //Memos
-    const drinkChunks = useMemo(() =>{
-        if(!drinksContent) return;
-        return Array.from({ length: Math.ceil(drinksContent.length / CHUNK_SIZE) }, (_, i) =>
-            drinksContent.slice(i * CHUNK_SIZE, i * CHUNK_SIZE + CHUNK_SIZE));
-    }, [drinksContent]);
+    const { drinkChunks } = useContext(DrinksContext);
 
     const handleIncrementPage = (id) =>{
-        if(parseInt(id) + 1 < drinkChunks.length){
-            navigate(`/drinks/${parseInt(id) + 1}`);
+        if(id + 1 < drinkChunks.length){
+            navigate(`/drinks/${id + 1}`);
         }
     }
 
     const handleDecrementPage = (id) =>{
-        if(parseInt(id) - 1 >= 0){
-            navigate(`/drinks/${parseInt(id) - 1}`);
+        if(id - 1 >= 0){
+            navigate(`/drinks/${id - 1}`);
         }
     }
 

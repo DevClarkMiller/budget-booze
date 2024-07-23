@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 //Components
@@ -14,17 +14,20 @@ const DrinksView = ({drinkChunks, chunkCount}) =>{
 
     const {id} = useParams();
 
+    const parsedID = useMemo(() => parseInt(id), [id]);
+
     //Memoized values
     const chunk = useMemo(() =>{
-        if(!drinkChunks || !id) return;
-        return drinkChunks[parseInt(id)];
-    }, [drinkChunks, id]);
+        if(!drinkChunks || isNaN(parsedID)) return;
+        console.log(drinkChunks[parsedID])
+        return drinkChunks[parsedID];
+    }, [drinkChunks, parsedID]);
 
     return(
         <div className="size-full col-flex-center gap-0">  
             {chunk&&<div className="size-full row-flex-center min-h-screen">
                 <AsideMenu className={`w-fit hidden lg:flex`} />
-                <DrinksList chunk={chunk} id={id} className={`w-full lg:w-2/3`} chunkCount={chunkCount} />
+                <DrinksList chunk={chunk} id={parsedID} className={`w-full lg:w-2/3`} chunkCount={chunkCount} />
             </div>}
             
             {!chunk && <div className="size-full col-flex-center p-5">

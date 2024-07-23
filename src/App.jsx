@@ -15,6 +15,8 @@ import { calcStandardPrice, calcStandard } from "./functions/drinkCalcs";
 
 export const DrinksContext = createContext();
 function App() {
+  const CHUNK_SIZE = 35;
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,6 +32,12 @@ function App() {
   //Memoized values
   const showCombos = useMemo(() =>( !(location?.pathname.includes("about") || location?.pathname === "/")), [location?.pathname]);
 
+  const drinkChunks = useMemo(() =>{
+    if(!drinksContent) return;
+    return Array.from({ length: Math.ceil(drinksContent.length / CHUNK_SIZE) }, (_, i) =>
+        drinksContent.slice(i * CHUNK_SIZE, i * CHUNK_SIZE + CHUNK_SIZE));
+  }, [drinksContent]);
+  
   //Memoized functions
   const sortDrinks = useCallback((sortName) =>{
     if(!rawDrinksContent) return;
@@ -96,7 +104,7 @@ function App() {
 
   return (
     <div className="App col-flex-center min-h-screen bg-orange-200">
-      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive, currentCategory, setCurrentCategory}}>
+      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive, currentCategory, setCurrentCategory, drinkChunks}}>
         <Header />
         <Menu />
         <MobileAsideMenu />
