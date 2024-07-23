@@ -12,6 +12,10 @@ const getSql = (categoryID) =>{
         ROW_NUMBER() OVER (PARTITION BY link  ORDER BY id DESC) as rn
         FROM Drinks
         WHERE date_ISO = date('now', 'localtime')  
+        AND total_volume > 0
+        AND alcohol_percent > 0
+        AND pieces_per > 0
+        AND price > 0
     )
 
     SELECT
@@ -28,13 +32,9 @@ const getSql = (categoryID) =>{
     d.store
     FROM RankedDrinks d INNER JOIN 
 	Drink_Categories dc ON d.category_ID = dc.category_ID
-    WHERE rn = 1 
-    AND total_volume > 0
-	AND alcohol_percent > 0
-	AND pieces_per > 0
-	AND price > 0
+    WHERE d.rn = 1 
     ${CATEGORY_CONDITION}
-    ORDER BY drink_name;
+    ORDER BY d.drink_name;
     `;
 }
 
