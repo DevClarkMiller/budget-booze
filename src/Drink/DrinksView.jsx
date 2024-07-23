@@ -19,20 +19,22 @@ const DrinksView = ({drinkChunks, chunkCount}) =>{
     //Memoized values
     const chunk = useMemo(() =>{
         if(!drinkChunks || isNaN(parsedID)) return;
-        console.log(drinkChunks[parsedID])
         return drinkChunks[parsedID];
     }, [drinkChunks, parsedID]);
 
     return(
         <div className="size-full col-flex-center gap-0">  
-            {chunk&&<div className="size-full row-flex-center min-h-screen">
-                <AsideMenu className={`w-fit hidden lg:flex`} />
-                <DrinksList chunk={chunk} id={parsedID} className={`w-full lg:w-2/3`} chunkCount={chunkCount} />
-            </div>}
-            
-            {!chunk && <div className="size-full col-flex-center p-5">
-                <LoadingIcons.SpinningCircles strokeOpacity={.125} speed={1.5}  className="size-1/4"/>
-            </div>}
+            <div className="size-full row-flex-center min-h-screen">
+                <AsideMenu className={`w-1/4 hidden lg:flex`} />
+
+                {chunk ? 
+                    <DrinksList chunk={chunk} id={parsedID} className={`w-full lg:w-3/4`} chunkCount={chunkCount} />
+                    :
+                    <div className="size-full col-flex-center p-5">
+                        <LoadingIcons.SpinningCircles strokeOpacity={.125} speed={1.5}  className="size-1/4"/>
+                    </div>
+                }
+            </div> 
         </div>   
     );
 }

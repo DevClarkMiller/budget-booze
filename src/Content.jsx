@@ -13,8 +13,16 @@ import { DrinksContext } from "./App";
 export const ContentContext = createContext();
 
 const Content = () =>{
+    const CHUNK_SIZE = 35;
     const navigate = useNavigate();
-    const { drinkChunks } = useContext(DrinksContext);
+    const { drinksContent } = useContext(DrinksContext);
+
+    const drinkChunks = useMemo(() =>{
+        if(!drinksContent) return;
+        return Array.from({ length: Math.ceil(drinksContent.length / CHUNK_SIZE) }, (_, i) =>
+            drinksContent.slice(i * CHUNK_SIZE, i * CHUNK_SIZE + CHUNK_SIZE));
+      }, [drinksContent]);
+
 
     const handleIncrementPage = (id) =>{
         if(id + 1 < drinkChunks.length){

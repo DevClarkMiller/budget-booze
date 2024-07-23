@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAll, getSpirit, getBeerCider, getWine, getCooler } = require('./controllers');
+const { getAll, getSpirit, getBeerCider, getWine, getCooler, getMaxStats } = require('./controllers');
 const cors = require('cors')
 
 

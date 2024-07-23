@@ -5,6 +5,9 @@ import { useMediaQuery } from "react-responsive";
 import SlidingPane from "react-sliding-pane";
 import CategoriesSection from "./Categories/CategoriesSection";
 import SelectSort from "./Categories/SelectSort";
+import FilterABV from "./Categories/FilterABV";
+import FilterML from "./Categories/FilterML";
+import FilterQTY from "./Categories/filterQTY";
 
 //Context
 import { DrinksContext } from "./App";
@@ -19,14 +22,18 @@ const MobileAsideMenu = () =>{
     return(
         <>{!isDesktopOrLaptop&&
             <SlidingPane
+                title="Filters"
                 isOpen={asideActive}
                 from="left"
                 width="100%"
                 onRequestClose={() => setAsideActive(false)}  
             >
-                <div className="size-fit flex flex-col">
+                <div className="size-full flex flex-col justify-start gap-5">
                     <SelectSort />
                     <CategoriesSection />
+                    <FilterML />
+                    <FilterABV />
+                    <FilterQTY />
                 </div>
             </SlidingPane> 
         }</>

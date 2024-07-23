@@ -18,7 +18,10 @@ const DrinksCard = ({drink}) =>{
                             <h2 className="flex-grow text-one-line">{drink.drink_name}</h2>
                         </div>
                         <h2>{volumeDisplay}</h2>
-                        <img loading="lazy" src={drink.image_url} alt={`${drink.drink_name} preview`}></img>
+                        <div className="drink-img-container flex-grow row-flex-center items-end">
+                            <img loading="lazy" src={drink.image_url} alt={`${drink.drink_name} preview`}></img>
+                        </div>
+                        
                         <span className="flex flex-row justify-between w-full"><h2>${formattedPrice}</h2><h2>{drink.alcohol_percent}%</h2> </span>
                     </div>
                 </CardWrapper>

@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback, useMemo, useContext } from 'react'
+import { createContext, useState, useEffect, useCallback, useMemo, useReducer } from 'react'
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
 //Components
@@ -9,13 +9,22 @@ import About from "./About";
 import Menu from './Menu';
 import MobileAsideMenu from './MobileAsideMenu';
 
+//Reducers
+import { INITIAL_STATE, filtersReducer } from './reducers/filtersReducer';
+
 //Functions
 import { fetchGet } from "./functions/fetch"
 import { calcStandardPrice, calcStandard } from "./functions/drinkCalcs";
 
 export const DrinksContext = createContext();
+
+const defaultMaxs ={
+  max_BAV: 10,
+  max_ML: 7500,
+  max_QTY: 20
+}
+
 function App() {
-  const CHUNK_SIZE = 35;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,27 +32,54 @@ function App() {
   const [currentSort, setCurrentSort] = useState('standardPrice');
 
   const [rawDrinksContent, setRawDrinksContent] = useState(null);
+
   const [drinksContent, setDrinksContent] = useState(null);
+  const [filteredDrinks, setFilteredDrinks] = useState(null);
+
+  const [filterMaxs, setFilterMaxs] = useState(defaultMaxs);
 
   const [asideActive, setAsideActive] = useState(false);
 
   const [currentCategory, setCurrentCategory] = useState("All");
 
+  //Reducers
+  const [filters, dispatchFilters] = useReducer(filtersReducer, INITIAL_STATE);
+
   //Memoized values
   const showCombos = useMemo(() =>( !(location?.pathname.includes("about") || location?.pathname === "/")), [location?.pathname]);
 
-  const drinkChunks = useMemo(() =>{
-    if(!drinksContent) return;
-    return Array.from({ length: Math.ceil(drinksContent.length / CHUNK_SIZE) }, (_, i) =>
-        drinksContent.slice(i * CHUNK_SIZE, i * CHUNK_SIZE + CHUNK_SIZE));
-  }, [drinksContent]);
-  
-  //Memoized functions
-  const sortDrinks = useCallback((sortName) =>{
-    if(!rawDrinksContent) return;
-      let tempDrinks = [...rawDrinksContent];
+  const handleFilterChange = e =>{
+    dispatchFilters({
+        type:"CHANGE_FILTER", 
+        payload:{ name: e.target.name, value:parseInt(e.target.value) }
+    });
+  }
 
-      switch(sortName){
+  const resetFilters = () =>{
+    dispatchFilters({
+      type:"RESET", 
+      payload: null
+    });
+  }
+
+  //Applies the filters to the drinks
+  useEffect(() =>{
+    if(!rawDrinksContent || isNaN(filters?.minABV) || isNaN(filters?.minML)) return;
+    let tempDrinks = [...rawDrinksContent];
+    tempDrinks = tempDrinks.filter((drink) =>(
+      drink.total_volume >= filters.minML 
+      && drink.alcohol_percent >= filters.minABV
+      && drink.pieces_per >= filters.minQTY
+    ));
+    setFilteredDrinks(tempDrinks);
+  }, [rawDrinksContent, filters]);
+
+  useEffect(() =>{
+    if(!filteredDrinks) return;
+      let tempDrinks = [...filteredDrinks];
+
+      //Filter
+      switch(currentSort){
         case "standardPrice":
           tempDrinks.sort((drink1, drink2) =>{ return calcStandardPrice(drink1) - calcStandardPrice(drink2)});
           break;
@@ -58,7 +94,7 @@ function App() {
           break;
       }
     setDrinksContent(tempDrinks);
-  }, [rawDrinksContent]);
+  }, [filteredDrinks, currentSort]);
 
   const handleCategoryChange = async (category) =>{
     let data;
@@ -79,11 +115,12 @@ function App() {
       case "Cooler":
         data = await fetchGet('/get/cooler');
         break;
-      default: 
-      break;
     }
     if(!data) return;
-    setRawDrinksContent(data);
+    resetFilters();
+    console.log(filters)
+    setRawDrinksContent(data.drinks);
+    setFilterMaxs(data.maxStats);
     navigate('/drinks/0');
   };
 
@@ -94,17 +131,16 @@ function App() {
   useEffect(async () =>{
     const fetchAll = async ()=>{
       const data = await fetchGet('get/all');
-      setRawDrinksContent(data);
+      setRawDrinksContent(data.drinks);
+      setFilterMaxs(data.maxStats);
     }
 
     fetchAll();
   }, []);
-  
-  useEffect(() =>{ sortDrinks(currentSort); }, [rawDrinksContent, currentSort]);
 
   return (
     <div className="App col-flex-center min-h-screen bg-orange-200">
-      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive, currentCategory, setCurrentCategory, drinkChunks}}>
+      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive, currentCategory, setCurrentCategory, handleFilterChange, filters, filterMaxs}}>
         <Header />
         <Menu />
         <MobileAsideMenu />

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root{
+  --beerOrange: "#F3B232";
+  --beerLightOrange: "#face78";
+}
+
 @layer base{
   html{
     @apply min-h-full;
@@ -74,6 +79,29 @@
   .hide{
     @apply h-0 max-h-0 opacity-0;
   }
+
+  
+}
+
+.slide-pane__header{
+  @apply !bg-appleGray;
+}
+
+.slide-pane__close{
+  @apply !bg-appleLightGray rounded-sm;
+}
+
+.slide-pane__title-wrapper{
+  @apply text-white;
+}
+
+.slide-pane__content{
+  @apply !bg-microsoftGray;
+}
+
+.drink-fill-grad{
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(to top, var(--beerOrange), #f0be5b, var(--beerLightOrange));
 }
 
 body {
