@@ -23,7 +23,7 @@ const LandingPage = () =>{
                 <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">Over 6000 drinks processed daily!</h2>
             </Quadrant>
             <Quadrant>
-                <p className="text-center text-xl md:text-2xl">Your center for drinking on a budget, the last and only web-app you'll need for drinking on a budget</p>
+                <p className="text-center text-xl md:text-2xl">Your center for drinking on a budget, the last and only web-app you'll need for getting drunk as cheaply as you can</p>
                 <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis"></h2>
             </Quadrant>
             <Quadrant className="lg:flex-row gap-3 justify-between">
