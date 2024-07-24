@@ -24,6 +24,12 @@ const defaultMaxs ={
   max_QTY: 20
 }
 
+const RedirectPage = () =>{
+  const navigate = useNavigate();
+  useEffect(() =>navigate('/'), []);
+  return(<></>);
+}
+
 function App() {
 
   const navigate = useNavigate();
@@ -145,6 +151,7 @@ function App() {
         <Menu />
         <MobileAsideMenu />
         <Routes>
+            <Route path='/0' element={<RedirectPage />}/>
             <Route path="/*" element={<Content />}/>
             <Route path="/about" element={<About />}/>
             <Route path="*" element={<NotFound />}/>
