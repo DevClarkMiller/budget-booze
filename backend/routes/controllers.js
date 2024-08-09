@@ -5,7 +5,6 @@ let sql;
 const getSql = (categoryID) =>{
     const CATEGORY_CONDITION = categoryID ? `AND d.category_ID = ${categoryID}` : "";
 
-
     return `
     WITH RankedDrinks AS (
         SELECT *,

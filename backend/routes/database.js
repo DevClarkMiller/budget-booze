@@ -1,5 +1,6 @@
+require('dotenv').config();
 const sqlite3 = require('sqlite3').verbose();
-const DB_PATH = "C:\\Users\\squas\\Desktop\\sqlite-tools-win-x64-3460000\\Emails.db"
+const DB_PATH = process.env.DB_PATH;
 let sql;
 
 //connect to DB
