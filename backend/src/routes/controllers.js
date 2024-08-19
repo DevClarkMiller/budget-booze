@@ -1,4 +1,4 @@
-const sqlDB = require('./database');
+const sqlDB = require('../database');
 const db = new sqlDB().createDB();
 let sql;
 
@@ -79,7 +79,8 @@ const getAll = (req, res) =>{
 
     db.all(sql, [], async (err, rows)=>{
         if(err){
-            return console.error(err.message);
+            console.error(err.message);
+            return res.status(500).send("Couldn't get everything");
         }else{
             console.log(`Bev count: ${rows.length}`);
             const maxStats = await findMaxStats();
@@ -96,7 +97,8 @@ const getSpirit = (req, res) =>{
 
     db.all(sql, [], async (err, rows)=>{
         if(err){
-            return console.error(err.message);
+            console.error(err.message);
+            return res.status(500).send("Couldn't get spirits");
         }else{
             const maxStats = await findMaxStats(categoryID);
             res.send({maxStats: maxStats, drinks: rows});
@@ -112,7 +114,8 @@ const getBeerCider = (req, res) =>{
 
     db.all(sql, [], async (err, rows)=>{
         if(err){
-            return console.error(err.message);
+            console.error(err.message);
+            return res.status(500).send("Couldn't get beer/cider");
         }else{
             const maxStats = await findMaxStats(categoryID);
             res.send({maxStats: maxStats, drinks: rows});
@@ -128,7 +131,8 @@ const getWine = (req, res) =>{
 
     db.all(sql, [], async (err, rows)=>{
         if(err){
-            return console.error(err.message);
+            console.error(err.message);
+            return res.status(500).send("Couldn't get wine");
         }else{
             const maxStats = await findMaxStats(categoryID);
             res.send({maxStats: maxStats, drinks: rows});
@@ -144,7 +148,8 @@ const getCooler = async (req, res) =>{
 
     db.all(sql, [], async (err, rows)=>{
         if(err){
-            return console.error(err.message);
+            console.error(err.message);
+            return res.status(500).send("Couldn't get coolers");
         }else{
             const maxStats = await findMaxStats(categoryID);
             res.send({maxStats: maxStats, drinks: rows});

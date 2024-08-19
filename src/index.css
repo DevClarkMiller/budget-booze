@@ -79,8 +79,6 @@
   .hide{
     @apply h-0 max-h-0 opacity-0;
   }
-
-  
 }
 
 .slide-pane__header{
@@ -103,6 +101,18 @@
   @apply bg-clip-text text-transparent;
   background-image: linear-gradient(to top, var(--beerOrange), #f0be5b, var(--beerLightOrange));
 }
+
+.drinkDetails th{
+  @apply pl-2 text-left font-medium;
+}
+
+.drinkDetails tr{
+  @apply odd:bg-orange-100;
+}
+
+.drinkDetails td{
+  @apply text-left;
+} 
 
 body {
   margin: 0;

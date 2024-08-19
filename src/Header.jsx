@@ -22,13 +22,13 @@ const Header = ({setCurrentSort}) =>{
                 <Link to="/" className="text-beerOrange nice-trans text-5xl flex-grow flex justify-center mb-3 hover:text-beerLightOrange">
                     <h1>Budget Booze</h1>
                 </Link>
-                {location.pathname.includes("about") ?
+                {/* {location.pathname.includes("about") ?
                     <IoIosBeer onClick={() => navigate('/')} className="text-white justify-self-end flex-none text-3xl cursor-pointer hover-beer"/>
                     :
                     <ShakeLittle>
                         <FcAbout onClick={() => navigate('/about')} className="justify-self-end flex-none text-3xl cursor-pointer"/>
                     </ShakeLittle>
-                }
+                } */}
             </span> 
         </header>
     );

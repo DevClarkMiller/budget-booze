@@ -8,7 +8,10 @@ module.exports = {
     extend: {
       fontFamily:{
         hind: "Hind, sans-serif",
-        Moul: "Moul, sans-serif"
+        Moul: "Moul, sans-serif",
+        Matemasie: "Matemasie, sans-serif",
+        Lobster: "Lobster, sans-serif",
+        SourceSerif: ["'Source Serif 4'", "serif"]
       },
       colors: {
         beerOrange: "#F3B232",

@@ -8,19 +8,19 @@ import { ShakeLittle } from "reshake";
 import { FaGithubSquare , FaLinkedin  } from "react-icons/fa";
 
 
-const About = ({}) => {
+const About = ({socialsBottom}) => {
 
     return(
-        <div className="aboutPage min-h-screen p-3 flex flex-col gap-5">
+        <div className={`aboutPage ${!socialsBottom && "min-h-screen "} p-3 flex flex-col gap-5`}>
 
-            <div className="socials w-full flex justify-center gap-4">
+            {!socialsBottom && <div className="socials w-full flex justify-center gap-4">
                 <ShakeLittle>
                     <FaLinkedin onClick={() => window.open("https://www.linkedin.com/in/clark-miller-b14718290/", "_blank")} className="text-5xl cursor-pointer"/>
                 </ShakeLittle>
                 <ShakeLittle>
                     <FaGithubSquare onClick={() => window.open("https://github.com/DevClarkMiller?tab=repositories", "_blank")} className="text-5xl cursor-pointer"/>
                 </ShakeLittle>
-            </div>
+            </div>}
             
             <CardWrapper>
                 <h2 className="hind font-bold text-3xl">About the Project</h2>
@@ -48,6 +48,15 @@ const About = ({}) => {
                     <li className="border-b border-black p-1">Way later on - Official release of an IOS/Android app!</li>
                 </ul>
             </CardWrapper>
+
+            {socialsBottom && <div className="socials w-full flex justify-center gap-4">
+                <ShakeLittle>
+                    <FaLinkedin onClick={() => window.open("https://www.linkedin.com/in/clark-miller-b14718290/", "_blank")} className="text-5xl cursor-pointer"/>
+                </ShakeLittle>
+                <ShakeLittle>
+                    <FaGithubSquare onClick={() => window.open("https://github.com/DevClarkMiller?tab=repositories", "_blank")} className="text-5xl cursor-pointer"/>
+                </ShakeLittle>
+            </div>}
         </div>
     );
 }

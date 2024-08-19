@@ -1,7 +1,6 @@
 require('dotenv').config();
 const sqlite3 = require('sqlite3').verbose();
 const DB_PATH = process.env.DB_PATH;
-let sql;
 
 //connect to DB
 

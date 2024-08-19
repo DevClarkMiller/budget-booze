@@ -52,7 +52,14 @@ function App() {
   const [filters, dispatchFilters] = useReducer(filtersReducer, INITIAL_STATE);
 
   //Memoized values
-  const showCombos = useMemo(() =>( !(location?.pathname.includes("about") || location?.pathname === "/")), [location?.pathname]);
+  const showCombos = useMemo(() =>{
+    const path = location?.pathname;
+
+    return !path.includes("about") && 
+    !path.includes("single") && 
+    path !== "/"
+
+  }, [location?.pathname]);
 
   const handleFilterChange = e =>{
     dispatchFilters({
