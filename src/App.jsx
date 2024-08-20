@@ -112,29 +112,29 @@ function App() {
   const handleCategoryChange = async (category) =>{
     let data;
     //Does a different request to change the data depending on what the category is
+    let categoryName = "all";
     switch(category){
-      case "All":
-        data = await fetchGet('/get/all');
-      break;
       case "Spirit":
-        data = await fetchGet('/get/spirit');
+        categoryName = "spirit";
         break;
       case "BeerCider":
-        data = await fetchGet('/get/beerCider');
+        categoryName = "beerCider";
         break;
       case "Wine":
-        data = await fetchGet('/get/wine');
+        categoryName = "wine";
         break;
       case "Cooler":
-        data = await fetchGet('/get/cooler');
+        categoryName = "cooler";
         break;
     }
+    data = await fetchGet(`/get/${categoryName}`);
+
     if(!data) return;
     resetFilters();
     console.log(filters)
     setRawDrinksContent(data.drinks);
     setFilterMaxs(data.maxStats);
-    navigate('/drinks/0');
+    navigate('/drinks/0');  // First page of drinks
   };
 
   /*

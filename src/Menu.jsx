@@ -1,11 +1,11 @@
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 import { useMediaQuery } from "react-responsive";
 
 //Components
 import SelectSort from "./Categories/SelectSort";
 
 //Icons
-import { RxHamburgerMenu } from "react-icons/rx";
+// import { RxHamburgerMenu } from "react-icons/rx";
 
 //Context
 import { DrinksContext } from "./App";

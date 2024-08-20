@@ -13,6 +13,10 @@ export const filtersReducer = (state, action) =>{
             }
         case "RESET":
             state = INITIAL_STATE;
-            return state;    
+            return state;   
+        default:
+            return{
+                state
+            }
     }
 }

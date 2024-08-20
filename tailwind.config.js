@@ -11,7 +11,8 @@ module.exports = {
         Moul: "Moul, sans-serif",
         Matemasie: "Matemasie, sans-serif",
         Lobster: "Lobster, sans-serif",
-        SourceSerif: ["'Source Serif 4'", "serif"]
+        SourceSerif: ["'Source Serif 4'", "serif"],
+        Acumin: ["Acumin"]
       },
       colors: {
         beerOrange: "#F3B232",
