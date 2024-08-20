@@ -169,3 +169,7 @@ header h1{
   @apply rounded-lg;
   box-shadow: 1px 1px 8px rgba(0, 0, 10, 0.497);
 }
+
+body{
+  @apply bg-orange-200; 
+}

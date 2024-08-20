@@ -3,15 +3,17 @@ import { useEffect, useState, useMemo } from "react";
 //Components
 import CardWrapper from "../mill-comps/components/CardWrapper";
 
-const DrinksCard = ({drink}) =>{
+const DrinksCard = ({drink, index}) =>{
     const formattedPrice = useMemo(() => parseFloat(drink.price).toFixed(2), [drink]);
     const volumeDisplay = useMemo(() =>((drink.pieces_per > 1) ? `${drink.pieces_per} x ${drink.total_volume} ml` : `${drink.total_volume} ml`),[drink]);
     const logoColour = useMemo(() => (drink.store === "LCBO") ? "text-[#174634]" : "text-beerOrange", [drink]);
 
+    console.log(index);
+
     return(
         <>
             {drink && <>
-                <CardWrapper href={drink.link} className='drinks-card-mobile lg:flex shadow-md'>
+                <CardWrapper to={!isNaN(index) ? `single/${index}` : null} className='drinks-card-mobile lg:flex shadow-md'>
                     <div className={`flippable-card-front`}>
                         <div className="drinkHeader flex items-center gap-2 w-3/4">
                             <h3 className={`${logoColour}`}>{drink.store}</h3>

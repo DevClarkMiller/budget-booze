@@ -152,7 +152,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App col-flex-center min-h-screen bg-orange-200">
+    <div className="App col-flex-center min-h-screen">
       <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive, currentCategory, setCurrentCategory, handleFilterChange, filters, filterMaxs}}>
         <Header />
         <Menu />
