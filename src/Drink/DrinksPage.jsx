@@ -47,10 +47,14 @@ const DrinksPage = ({chunkIndex, chunk}) =>{
         window.open(drink?.link, "_blank");
     }
 
-    // useEffect(() => console.log(drink),[drink]);
-
     const MoreDetails = () =>{
-        const standardContent = useMemo(() => `${drink?.pieces_per} x ${(numStandards / drink?.pieces_per)?.toFixed(1)}`, [drink]);
+        const standardContent = useMemo(() => {
+            if (drink?.pieces_per > 1){
+                return `${drink?.pieces_per} x ${(numStandards / drink?.pieces_per)?.toFixed(1)}`;
+            }else{
+                return `${(numStandards / drink?.pieces_per)?.toFixed(1)}`
+            }
+        }, [drink]);
 
         return(
             <>
