@@ -7,6 +7,12 @@ node_modules/
 /.pnp
 .pnp.js
 
+# scraping test files
+lcboData.json
+tbsData.json
+tbs-test-raw.json
+lcbo-test-raw.json
+
 # testing
 /coverage
 

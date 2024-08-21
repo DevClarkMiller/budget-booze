@@ -7,9 +7,7 @@ const DrinksCard = ({drink, index}) =>{
     const formattedPrice = useMemo(() => parseFloat(drink.price).toFixed(2), [drink]);
     const volumeDisplay = useMemo(() =>((drink.pieces_per > 1) ? `${drink.pieces_per} x ${drink.total_volume} ml` : `${drink.total_volume} ml`),[drink]);
     const logoColour = useMemo(() => (drink.store === "LCBO") ? "text-[#174634]" : "text-beerOrange", [drink]);
-
-    console.log(index);
-
+    
     return(
         <>
             {drink && <>

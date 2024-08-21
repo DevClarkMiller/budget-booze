@@ -2,7 +2,7 @@
   "name": "ontario-goon",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://134.122.41.43.",
+  "proxy": "https://budgetbooze.ca",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

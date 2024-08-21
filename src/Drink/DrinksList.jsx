@@ -1,7 +1,10 @@
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo, useRef, useLayoutEffect } from "react";
 
 //Components
 import DrinksCard from "./DrinksCard";
+
+//Functions
+import scrollTo from '../functions/scrollTo';
 
 //Icons
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
@@ -13,10 +16,26 @@ const DrinksList = (props) =>{
     //Context
     const {handleDecrementPage, handleIncrementPage} = useContext(ContentContext);
 
+    //Refs
+    const btnsRef = useRef();
+
     const pageDetails = useMemo(() =>({
         hasNextPage: (props?.id + 1 < props.chunkCount),
         hasPrevPage: (props?.id - 1 >= 0)
     }), [props?.id, props?.chunkCount]);
+
+    //Scrolls a user to the buttons element if the page loads and they're scrolled over halfway in the page
+    useLayoutEffect(() =>{
+        setTimeout(() =>{
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scroll = document.documentElement.scrollTop;
+            console.log(`CURRENT SCROLL: ${scroll} MAX SCROLL: ${maxScroll}`);
+            if (scroll > maxScroll / 3){
+                console.log('Going to finish scroll');
+                scrollTo(btnsRef);
+            }
+        }, 150);
+    }, []);
 
     return(
         <div className={`${props.className}`}>
@@ -26,7 +45,7 @@ const DrinksList = (props) =>{
                 ))}   
             </div>
 
-            <div className="flex flex-row justify-center gap-2 mb-3">
+            <div ref={btnsRef} className="flex flex-row justify-center gap-2 mb-3">
                 <button disabled={!pageDetails?.hasPrevPage} className={`${pageDetails.hasPrevPage ? "page-nav-btn" : "disabled-nav-btn"} row-flex-center items-center text-2xl`} onClick={() => handleDecrementPage(props.id)}><FaArrowLeft /></button>
                 <button disabled={!pageDetails?.hasNextPage} className={`${pageDetails.hasNextPage ? "page-nav-btn" : "disabled-nav-btn"} row-flex-center items-center text-2xl`} onClick={() => handleIncrementPage(props.id)}><FaArrowRight /></button>
             </div>

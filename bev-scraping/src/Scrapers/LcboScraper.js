@@ -116,7 +116,8 @@ module.exports = class LcboScraper extends Scraper{
                 }, this.WAIT_TIMEOUT); // Logs every 10 seconds to keep the process alive
         
                 // Handle manual closure
-                browser.on('disconnected', () => {
+                browser.on('disconnected', async () => {
+                    await browser.close();
                     clearInterval(keepAlive);
                     resolve();
                 });
@@ -126,8 +127,16 @@ module.exports = class LcboScraper extends Scraper{
     }
 
     getCategory = (categories) =>{
-        const categoryArr = categories[categories.length - 1];  //Gets the last index of the categories array
-        const category = categoryArr.split("|")[1];
+        let categoryArr = [];
+        let splitCatArr = '';
+
+        //Different categories mess up parsing, so check for that here
+        do{
+            categoryArr = categories.pop();
+            splitCatArr = categoryArr.split("|");
+        }while(splitCatArr[0] !== "Products");
+
+        let category = splitCatArr[1];
     
         //Returns the category id for the 
     
@@ -138,6 +147,7 @@ module.exports = class LcboScraper extends Scraper{
             case this.categoriesStringENUM.Wine: categoryID = this.categoriesENUM.Wine; break;
             case this.categoriesStringENUM.Sake: categoryID = this.categoriesENUM.Sake; break;
             case this.categoriesStringENUM.Cooler: categoryID = this.categoriesENUM.Cooler; break;
+            case "Coolers And Cocktails": categoryID = this.categoriesENUM.Cooler; break;
             default: categoryID = 0; break; //Returns 0 if there wasn't a valid drink detected
         }
         return categoryID;
@@ -170,7 +180,10 @@ module.exports = class LcboScraper extends Scraper{
                             pieces_per: parseInt(bev.raw.lcbo_bottles_per_pack),
                             price: parseFloat(bev.raw.ec_price),
                             image_url: bev.raw.ec_thumbnails,
-                            link: bev.uri
+                            link: bev.uri,
+                            origin_country: bev.raw.country_of_manufacture,
+                            container: bev.raw.lcbo_selling_package_name,
+                            description: bev.raw.ec_shortdesc
                         }
                         if(bevObj.volume <= 0 || bevObj.percent <= 0 || bevObj.category <= 0) continue;   //Continues if it's not a drink
                         this.bevs.push(bevObj);
@@ -183,77 +196,41 @@ module.exports = class LcboScraper extends Scraper{
         });
     }
 
-    insertBevsInDB = () => {
-        //1. Create promise 
-        return new Promise(async (resolve, reject) => {
-            try{
-                //2. Open database connection with promise
-                const db = await this.createDB();
-                
-                console.log('Now going to insert all drinks into the database');
-                const dateISO = new Date().toLocaleDateString('en-ca'); //Outputs it in locale time in format of yyyy-mm-dd
-
-                //3. Open transaction
-                db.serialize(() => {
-                    db.run("BEGIN TRANSACTION");
-        
-                    //4. Insert each of the bevs into the transaction
-                    const sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link, store) VALUES (?,?,?,?,?,?,?,?,?,?)';
-                    let insertionPromises = this.bevs.map((bev) => {
-                        return new Promise((resolve, reject) => {
-                            db.run(sql, [bev.drink_name, bev.total_volume, bev.alcohol_percent, bev.category_ID, bev.pieces_per, bev.price, bev.image_url, dateISO, bev.link, this.STORE], (err) => {
-                                if (err) {
-                                    console.error(err.message);
-                                    reject(err);
-                                } else {
-                                    resolve();
-                                }
-                            });
-                        });
-                    });
-
-                    //5. If all is well, commit transaction, if not then roll it back
-                    Promise.all(insertionPromises)
-                        .then(() => {
-                            db.run("COMMIT", (err) => {
-                                if (err) {
-                                    console.error('Commit failed:', err.message);
-                                    return reject(err);
-                                }
-                                console.log('Inserted all bevs into the database');
-        
-                                db.close((err) => {
-                                    if (err) {
-                                        console.error('Error closing the database:', err.message);
-                                        return reject(err);
-                                    }
-                                    console.log('Closed the database connection.');
-                                    resolve(true);
-                                });
-                            });
-                        })
-                        .catch((err) => {
-                            db.run("ROLLBACK");
-                            reject(err);
-                        });
-                });
-            }catch(err){
-                console.error(err);
-            }
-        });
-    };
-
-    start(){
+    start(devmode, providedRawData, providedParsedData){
         return new Promise(async (resolve, reject) =>{
-            //1. Command it to get you the beers 😈
-            console.log('Step 1. Get the raw drink data');
+            if(providedParsedData){
+                this.bevs = require('../../lcboData.json');
+                await this.insertBevsInDB();
+                return resolve();
+            }
+
+            if(!providedRawData){
+                //1. Command it to get you the bevs 😈
+                console.log('Step 1. Get the raw lcbo data');
 
                 //Loops until the browser sucessfully returns all the bevs
-            do{ await this.getBevs(); } while(this.rawBevs.length === 0);
+                do{ await this.getBevs(); } while(this.rawBevs.length === 0);
 
+                console.log('Step 2. Parse the raw lcbo data');
+            }else{
+                this.rawBevs = [require('../lcbo-test-raw.json').results];
+            }
+    
             await this.parseBevs();
 
-            await this.insertBevsInDB();
+            if(!devmode){
+                console.log('Step 3. Insert parsed lcbo data into the database');
+                await this.insertBevsInDB();
+            }else{
+                
+                try{
+                    const fs = require('fs');
+                    fs.writeFileSync('./lcboData.json', JSON.stringify(this.bevs, null, '\t'));
+                    console.log('Successfully logged lcbo data');
+                }catch(err){
+                    console.error(err);
+                }
+            }
 
             console.log(`DRINK COUNT: ${this.getNumBevs()}`);
             resolve();

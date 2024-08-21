@@ -5,7 +5,10 @@
   "main": "scrape-bevs.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/scrape-bevs.js"
+    "start": "node ./src/scrape-bevs.js",
+    "start:dev": "node ./src/scrape-bevs.js --devmode",
+    "start:dev-providedRaw": "node ./src/scrape-bevs.js --devmode --provided",
+    "start:dev-providedParsed": "node ./src/scrape-bevs.js --devmode --providedParsed"
   },
   "author": "Clark Miller",
   "license": "ISC",

@@ -93,7 +93,8 @@ module.exports = class BeerScraper extends Scraper {
                 }, this.WAIT_TIMEOUT); // Logs every 1.5 seconds to keep the browser alive
         
                 // Handle manual closure
-                browser.on('disconnected', () => {
+                browser.on('disconnected', async () => {
+                    await browser.close();
                     clearInterval(keepAlive);
                     resolve();
                 });
@@ -125,7 +126,10 @@ module.exports = class BeerScraper extends Scraper {
                         pieces_per: beer.size,
                         price: beer.salePrice,
                         image_url: beer.images[0],  //Gets the first img from the array of drink images
-                        link: beerURL
+                        link: beerURL,
+                        origin_country: beer._highlightResult.country.value,
+                        container: (beer?.format === "Cans" ? "can" : "bottle"),
+                        description: beer.description
                     };
 
                     this.bevs.push(beerObj);
@@ -135,82 +139,41 @@ module.exports = class BeerScraper extends Scraper {
         });
     }
 
-    insertBevsInDB(){
-        //1. Create promise 
+    start(devmode, providedRawData, providedParsedData){
         return new Promise(async (resolve, reject) =>{
-            try{
-                //2. Open database connection with promise
-                const db = await this.createDB();
-
-                console.log('Now going to insert all beers into the database');
-                const dateISO = new Date().toLocaleDateString('en-ca'); //Outputs it in locale time in format of yyyy-mm-dd
-
-                //3. Open transaction
-                db.serialize(() => {
-                    db.run("BEGIN TRANSACTION");
-        
-                    //4. Insert each of the beers into the transaction
-                    const sql = 'INSERT INTO Drinks (drink_name, total_volume, alcohol_percent, category_ID, pieces_per, price, image_url, date_ISO, link, store) VALUES (?,?,?,?,?,?,?,?,?,?)';
-                    let insertionPromises = this.bevs.map((bev) => {
-                        return new Promise((resolve, reject) => {
-                            const params = [bev.drink_name, bev.total_volume, bev.alcohol_percent, bev.category_ID, bev.pieces_per, bev.price, bev.image_url, dateISO, bev.link, this.STORE];
-                            db.run(sql, params, (err) => {
-                                if (err) {
-                                    console.error(err.message);
-                                    reject(err);
-                                } else {
-                                    resolve();
-                                }
-                            });
-                        });
-                    });
-
-                    //5. If all is well, commit transaction, if not then roll it back
-                    Promise.all(insertionPromises)
-                        .then(() => {
-                            db.run("COMMIT", (err) => {
-                                if (err) {
-                                    console.error('Commit failed:', err.message);
-                                    return reject(err);
-                                }
-                                console.log('Inserted all bevs into the database');
-        
-                                db.close((err) => {
-                                    if (err) {
-                                        console.error('Error closing the database:', err.message);
-                                        return reject(err);
-                                    }
-                                    console.log('Closed the database connection.');
-                                    resolve(true);
-                                });
-                            });
-                        })
-                        .catch((err) => {
-                            db.run("ROLLBACK");
-                            reject(err);
-                        });
-                });
-            }catch(err){
-                console.error(err);
+            if(providedParsedData){
+                this.bevs = require('../../tbsData.json');
+                await this.insertBevsInDB();
+                return resolve();
             }
-        });
-    }
 
-    start(){
-        return new Promise(async (resolve, reject) =>{
-            //1. Command it to get you the beers 😈
-            console.log('Step 1. Get the raw beer data');
-            
-            //Loops until the browser sucessfully returns all the beers
-            do{ await this.getBevs(); }while(this.rawBevs.length === 0);
-            
-            //2. Parse those beers
-            console.log('Step 2. Parse the raw beer data');
+            if(!providedRawData){
+                //1. Command it to get you the beers 😈
+                console.log('Step 1. Get the raw beer data');
+                
+                //Loops until the browser sucessfully returns all the beers
+                do{ await this.getBevs(); }while(this.rawBevs.length === 0);
+                
+                //2. Parse those beers
+                console.log('Step 2. Parse the raw beer data');
+            }else{
+                this.rawBevs = [require('../tbs-test-raw.json').results[0].hits];
+            }
             await this.parseBevs();
 
-            //3. Push those beers to the database
-            console.log('Step 3. Insert parsed beer data into the database');
-            await this.insertBevsInDB();
+            if(!devmode){
+                //3. Push those beers to the database
+                console.log('Step 3. Insert parsed beer data into the database');
+                await this.insertBevsInDB();
+            }else{
+                const fs = require('fs');
+                try{
+                    fs.writeFileSync('./tbsData.json', JSON.stringify(this.bevs, null, '\t'));
+                    console.log('Successfully logged tbs data');
+                }catch(err){
+                    console.error(err);
+                }
+            }
 
             console.log(`BEER COUNT: ${this.getNumBevs()}`);
             resolve();

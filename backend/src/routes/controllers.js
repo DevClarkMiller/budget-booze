@@ -28,7 +28,10 @@ const getSql = (categoryID) =>{
         d.image_url,
         d.date_ISO,
         d.link,
-        d.store
+        d.store,
+        d.origin_country,
+		d.container,
+		d.description
         FROM RankedDrinks d INNER JOIN 
         Drink_Categories dc ON d.category_ID = dc.category_ID
         WHERE d.rn = 1 
