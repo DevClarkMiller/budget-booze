@@ -27,7 +27,14 @@
   }
 
   .drinks-card-mobile{
-    @apply drinks-card col-flex-center w-3/4 relative sm:w-2/5 md:w-1/5 lg:w-1/6 lg:min-h-80;
+    @apply drinks-card col-flex-center w-3/4 relative;
+  }
+
+  .drinks-card-responsive{
+    @apply sm:w-2/5;
+    @apply md:w-1/5;
+    @apply lg:w-1/6;
+    @apply lg:min-h-80;
   }
 
   .drink-card-desktop{
@@ -44,6 +51,20 @@
 
   .flippable-card-front{
     @apply nice-trans size-full col-flex-center justify-between text-clip text-center;
+  }
+
+  .random-pick-card{
+    @apply text-lg;
+    @apply md:text-xl;
+    @apply lg:text-2xl;
+  }
+  
+  .random-pick-card .drink-header {
+    @apply w-full;
+  }
+
+  .random-pick-card .drink-img-container img{
+    @apply max-h-96;
   }
 
   .drink-link{
@@ -89,7 +110,7 @@
   }
 
   .about-card{
-    @apply w-full p-4 border-shadow lg:aspect-square bg-beerDarkOrange col-flex-center justify-between;
+    @apply w-full h-full p-4 border-shadow lg:aspect-square bg-beerDarkOrange col-flex-center justify-between;
     @apply first:flex-grow;
   }
 

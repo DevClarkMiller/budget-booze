@@ -39,7 +39,7 @@ const DrinksList = (props) =>{
         <div className={`${props.className}`}>
             <div className={`drinksView row-flex-center flex-wrap gap-2 mb-2`}>
                 {props.chunk?.map((drink, index) =>(
-                    <DrinksCard key={`${drink.drink_name}|${drink.id}`} index={index} drink={drink}/>
+                    <DrinksCard key={`${drink.drink_name}|${drink.id}`} nav index={index} drink={drink}/>
                 ))}   
             </div>
 
