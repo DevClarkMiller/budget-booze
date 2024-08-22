@@ -75,10 +75,14 @@ const DrinksPage = ({chunkIndex, chunk}) =>{
     }
 
     const MainDetails = () =>{
+        const volText = useMemo(() => (
+            drink?.pieces_per > 1 ? `${drink?.pieces_per} x ${drink?.total_volume} ml` : `${drink?.total_volume} ml`
+        ), [drink]);
+
         return(
             <>
                 <h2 className="font-[sans-serif] text-3xl font-semibold text-center lg:text-left">{drink?.drink_name}</h2>
-                <p className="font-[sans-serif] font-medium">{drink?.pieces_per} x {drink?.total_volume} ml</p>
+                <p className="font-[sans-serif] font-medium">{volText}</p>
                 <p className="text-3xl font-medium font-[sans-serif]">${drink?.price?.toFixed(2)}</p>
             </>
         );

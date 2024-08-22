@@ -43,19 +43,28 @@ const About = ({socialsBottom}) => {
             <h3 className="ml-12 mt-6 text-4xl font-bold">About</h3>
             <div className="w-full flex justify-center">
                 <div className="col-flex-center w-full lg:w-4/6 lg:grid grid-cols-2 gap-5 text-white font-semibold text-2xl">
-                    <p className="about-card">
-                        The purpose of this project is to give the power back to the consumer. The LCBO's website's
+                    <div className="about-card">
+                        <p>
+                            The purpose of this project is to give the power back to the consumer. The LCBO's website's
                             sorting algorithm doesn't take into account the true value of each product, their sales are
                             never as good as they seem and their advertising will try to tell you otherwise. So I've
                             taken things into my own hands and am here to provide you with the best shopping experience.
-                        
-                    </p>
-                    <p className="about-card">
-                        I am a second year computer programming and analyst student and I love to go out with
+                            
+                        </p>
+                        <p>
+                            The Project
+                        </p>
+                    </div>
+                    <div className="about-card">
+                        <p>
+                            I am a second year computer programming and analyst student and I love to go out with
                             my friends, however I don't like spending money. A lot of my projects are oriented around
                             saving money and passing the savings off to other people, not just myself.
-                        
-                    </p>
+                        </p>
+                        <p>
+                            The Creator
+                        </p>
+                    </div>
                 </div>
             </div>
 

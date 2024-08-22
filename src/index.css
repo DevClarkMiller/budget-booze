@@ -89,7 +89,14 @@
   }
 
   .about-card{
-    @apply w-full p-4 border-shadow lg:aspect-square bg-beerDarkOrange flex items-center text-center;
+    @apply w-full p-4 border-shadow lg:aspect-square bg-beerDarkOrange col-flex-center justify-between;
+    @apply first:flex-grow;
+  }
+
+  .about-card p{
+    @apply text-center;
+    @apply first:flex-grow first:flex first:items-center first:text-left first:md:text-center;
+    @apply last:text-lg last:font-bold last:w-full last:p-2 last:mt-3 last:bg-beerOrange;
   }
 
   .card .title{
