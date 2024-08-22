@@ -4,6 +4,9 @@ import { useEffect, useState, useMemo } from "react";
 import CardWrapper from "../mill-comps/components/CardWrapper";
 
 const DrinksCard = ({drink, index}) =>{
+    //State
+
+    //Memoized values
     const formattedPrice = useMemo(() => parseFloat(drink.price).toFixed(2), [drink]);
     const volumeDisplay = useMemo(() =>((drink.pieces_per > 1) ? `${drink.pieces_per} x ${drink.total_volume} ml` : `${drink.total_volume} ml`),[drink]);
     const logoColour = useMemo(() => (drink.store === "LCBO") ? "text-[#174634]" : "text-beerOrange", [drink]);
@@ -19,7 +22,7 @@ const DrinksCard = ({drink, index}) =>{
                         </div>
                         <h2>{volumeDisplay}</h2>
                         <div className="drink-img-container flex-grow row-flex-center items-end">
-                            <img loading="lazy" src={drink.image_url} alt={`${drink.drink_name} preview`}></img>
+                            <img className="object-contain" loading="eager" src={drink?.image_url} alt={`${drink.drink_name} preview`}></img>
                         </div>
                         
                         <span className="flex flex-row justify-between w-full"><h2>${formattedPrice}</h2><h2>{drink.alcohol_percent}%</h2> </span>

@@ -6,6 +6,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens:{
+        'largeMobile': "562px"
+      },
+
       fontFamily:{
         hind: "Hind, sans-serif",
         Moul: "Moul, sans-serif",
@@ -14,8 +18,10 @@ module.exports = {
         SourceSerif: ["'Source Serif 4'", "serif"],
         Acumin: ["Acumin"]
       },
+
       colors: {
         beerOrange: "#F3B232",
+        beerDarkOrange: "#FE8E21",
         beerLightOrange: "#face78",
         microsoftGray: "#F2F2F2",
         appleBlue: "#0077ED",

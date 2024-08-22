@@ -29,9 +29,7 @@ const DrinksList = (props) =>{
         setTimeout(() =>{
             const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
             const scroll = document.documentElement.scrollTop;
-            console.log(`CURRENT SCROLL: ${scroll} MAX SCROLL: ${maxScroll}`);
             if (scroll > maxScroll / 3){
-                console.log('Going to finish scroll');
                 scrollTo(btnsRef);
             }
         }, 150);

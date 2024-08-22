@@ -27,7 +27,7 @@
   }
 
   .drinks-card-mobile{
-    @apply drinks-card col-flex-center w-3/4 relative sm:w-2/5 md:w-1/5 lg:w-1/6;
+    @apply drinks-card col-flex-center w-3/4 relative sm:w-2/5 md:w-1/5 lg:w-1/6 lg:min-h-80;
   }
 
   .drink-card-desktop{
@@ -78,6 +78,26 @@
 
   .hide{
     @apply h-0 max-h-0 opacity-0;
+  }
+
+  .card{
+    @apply border-shadow p-3 col-flex-center justify-between w-full aspect-square bg-beerOrange text-white;
+    @apply max-w-[400px];
+    @apply largeMobile:max-w-60 largeMobile:w-60;
+    @apply md:max-w-72 md:w-72;
+    @apply lg:max-w-96 lg:w-96;
+  }
+
+  .about-card{
+    @apply w-full p-4 border-shadow lg:aspect-square bg-beerDarkOrange flex items-center text-center;
+  }
+
+  .card .title{
+    @apply text-xl font-semibold text-center flex-grow flex items-center;
+  }
+  
+  .card .timeline{
+    @apply text-lg font-bold text-center w-full p-2 bg-beerLightOrange;
   }
 }
 
@@ -167,6 +187,10 @@ header h1{
 
 .container{
   @apply rounded-lg;
+  box-shadow: 1px 1px 8px rgba(0, 0, 10, 0.497);
+}
+
+.border-shadow{
   box-shadow: 1px 1px 8px rgba(0, 0, 10, 0.497);
 }
 
