@@ -37,14 +37,18 @@ const LandingPage = () =>{
         <div className="size-full flex-grow">
             <div className="w-full col-flex-center p-3 gap-5 lg:grid grid-cols-2 lg:gap-3">
                 <div className="drinksNDescription size-full grid grid-rows-3 col-span-1 container">
-                    <button className="p-2 nice-trans bg-beerOrange hover:bg-beerLightOrange text-white rounded-t-lg row-span-2" onClick={() => navigate('/drinks/0')}>
-                        <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">Take me to the booze! 🍺</h2>
-                        <h3 className="text-2xl font-semibold italic w-full flex justify-end pr-4 md:pr-16 pt-2">
-                            "More booze for your buck"
-                        </h3>
-                    </button>
-                    <div className="p-2 bg-beerDarkOrange flex items-center text-white rounded-b-lg">
-                        <p className="text-xl md:text-2xl lg:text-3xl font-hind lg:text-center">
+                    <div className="drinks-entry-container size-full rounded-t-lg row-span-2">
+                        <button className="drinks-entry-btn size-full text-white p-2 " onClick={() => navigate('/drinks/0')}>
+                            <span className="z-30">
+                                <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">Take me to the booze! 🍺</h2>
+                                <h3 className="text-xl md:text-2xl font-semibold italic w-full flex justify-end pr-4 md:pr-16 pt-2">
+                                    "More booze for your buck"
+                                </h3>
+                            </span>
+                        </button>
+                    </div>
+                    <div className="mission-statement p-2 bg-beerDarkOrange flex items-center text-white rounded-b-lg">
+                        <p className="text-xl md:text-2xl lg:text-3xl font-hind lg:text-center font-thin">
                             Your center for drinking on a budget, the last and only 
                             web-app you'll need for getting drunk as cheaply as you can
                         </p>

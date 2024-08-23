@@ -8,6 +8,7 @@ import Header from "./Header";
 import About from "./About";
 import Menu from './Menu';
 import MobileAsideMenu from './MobileAsideMenu';
+import QrRedirect from './QrRedirect';
 
 //Reducers
 import { INITIAL_STATE, filtersReducer } from './reducers/filtersReducer';
@@ -159,6 +160,7 @@ function App() {
         <MobileAsideMenu />
         <Routes>
             <Route path='/0' element={<RedirectPage />}/>
+            <Route path="/qrcode" element={<QrRedirect />}/>
             <Route path="/*" element={<Content />}/>
             <Route path="/about" element={<About />}/>
             <Route path="*" element={<NotFound />}/>

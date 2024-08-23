@@ -3,8 +3,14 @@
 @tailwind utilities;
 
 :root{
-  --beerOrange: "#F3B232";
-  --beerLightOrange: "#face78";
+  --beerOrange: #f3b232;
+  --beerLightOrange: #face78;
+  --beerDarkOrange: #FE8E21;
+  --grad-orng-1: #ffcd90;
+  --grad-orng-2: #ffb76b;
+  --grad-orng-3: #ffa652;
+  --grad-orng-4: #ff8d21;
+  --grad-orng-5: #ff7b00;
 }
 
 @layer base{
@@ -224,4 +230,35 @@ header h1{
 
 body{
   @apply bg-orange-200; 
+}
+
+/* .drinks-entry-btn{
+  @apply nice-trans hover:bg-beerLightOrange border border-white;
+} */
+
+.drinks-entry-container{
+  @apply col-flex-center p-5 bg-beerOrange overflow-hidden;
+  /* background-image: linear-gradient(var(--grad-orng-1), var(--grad-orng-3), var(--grad-orng-4), var(--grad-orng-5), var(--grad-orng-1)); */
+}
+
+.mission-statement{
+  @apply p-5;
+  /* background-image: linear-gradient(var(--grad-orng-1), var(--beerDarkOrange), var(--beerDarkOrange), var(--beerDarkOrange)); */
+}
+
+
+.drinks-entry-btn{
+  @apply rounded-lg outline-none opacity-100;
+  border: 5em;
+  -webkit-transform: translate(0);
+  transform: translate(0);
+  background-image: linear-gradient(45deg, #4568dc, #b06ab3);
+  padding: 0.7em 2em;
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.438);
+  -webkit-transition: box-shadow 0.25s;
+  transition: box-shadow 0.25s, opacity 300ms;
+}
+
+.drinks-entry-btn:hover{
+  opacity: 90%;
 }
