@@ -35,7 +35,7 @@ const LandingPage = () =>{
 
     return(
         <div className="size-full flex-grow">
-            <div className="w-full col-flex-center p-3 gap-2 lg:grid grid-cols-2 lg:gap-3">
+            <div className="w-full col-flex-center p-3 gap-5 lg:grid grid-cols-2 lg:gap-3">
                 <div className="drinksNDescription size-full grid grid-rows-3 col-span-1 container">
                     <button className="p-2 nice-trans bg-beerOrange hover:bg-beerLightOrange text-white rounded-t-lg row-span-2" onClick={() => navigate('/drinks/0')}>
                         <h2 className="font-semibold text-2xl md:text-3xl lg:text-4xl text-center overflow-hidden overflow-ellipsis">Take me to the booze! 🍺</h2>
