@@ -232,20 +232,15 @@ body{
   @apply bg-orange-200; 
 }
 
-/* .drinks-entry-btn{
-  @apply nice-trans hover:bg-beerLightOrange border border-white;
-} */
 
 .drinks-entry-container{
-  @apply col-flex-center p-5 bg-beerOrange overflow-hidden;
+  @apply col-flex-center p-8 lg:p-12 bg-beerOrange overflow-hidden;
   /* background-image: linear-gradient(var(--grad-orng-1), var(--grad-orng-3), var(--grad-orng-4), var(--grad-orng-5), var(--grad-orng-1)); */
 }
 
 .mission-statement{
   @apply p-5;
-  /* background-image: linear-gradient(var(--grad-orng-1), var(--beerDarkOrange), var(--beerDarkOrange), var(--beerDarkOrange)); */
 }
-
 
 .drinks-entry-btn{
   @apply rounded-lg outline-none opacity-100;

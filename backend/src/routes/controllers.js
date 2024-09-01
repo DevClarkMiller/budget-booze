@@ -160,4 +160,26 @@ const getCooler = async (req, res) =>{
     });
 }
 
-module.exports = { getAll, getSpirit, getBeerCider, getWine, getCooler };    //Add controller references to this!
+const incrementQrCount = (req, res) =>{
+    const fs = require('fs');
+    const path = '/srv/budget-booze/src/qr-count.txt';
+
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+
+    try{
+        const text = fs.readFileSync(path, 'utf-8');
+        let qrCount = parseInt(text);
+        qrCount++;
+
+        console.log(`QR ACCESS COUNT: ${qrCount}`);
+        fs.writeFileSync(path, qrCount.toString());
+        res.status(200).send(`QR ACCESS COUNT: ${qrCount}`);
+    }catch(err){
+        console.error(err);
+        res.status(500).send(err);
+    }
+} 
+
+module.exports = { getAll, getSpirit, getBeerCider, getWine, getCooler, incrementQrCount };

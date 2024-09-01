@@ -1,22 +1,31 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import api from "./functions/api";
+
 //Components
+import LoadingIcons from "react-loading-icons";
 
 const QrRedirect = () => {
     const navigate = useNavigate();
 
     const postNNav = async () =>{
+        try{
+            const response = await api.put('/incrementQr');
+        }catch(err){
+            console.error(err);
+        }
+
         navigate('/');  //Navs to homepage
     };
 
     useEffect(() =>{
-        alert("QR NAV PAGE");
+        postNNav();
     }, []);
 
     return (
-        <div>
-
+        <div className="size-full col-flex-center justify-center flex-grow">
+            <LoadingIcons.SpinningCircles strokeOpacity={.125} speed={1.5}  className="size-3/4 lg:size-1/6"/>
         </div>
     );
 }
