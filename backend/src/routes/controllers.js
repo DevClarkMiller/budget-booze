@@ -1,57 +1,96 @@
 const sqlDB = require('../database');
 const db = new sqlDB().createDB();
-let sql;
 
-const getSql = (categoryID) =>{
-    const CATEGORY_CONDITION = categoryID ? `AND d.category_ID = ${categoryID}` : "";
+// `
+//     WITH RankedDrinks AS (
+//         SELECT *,
+//         ROW_NUMBER() OVER (PARTITION BY link  ORDER BY id DESC) as rn
+//         FROM Drinks
+//         WHERE total_volume > 0
+//         AND alcohol_percent > 0
+//         AND pieces_per > 0
+//         AND price > 0
+//     )
 
-    return `
-    WITH RankedDrinks AS (
-        SELECT *,
-        ROW_NUMBER() OVER (PARTITION BY link  ORDER BY id DESC) as rn
-        FROM Drinks
-        WHERE date_ISO = date('now', 'localtime')  
-        AND total_volume > 0
-        AND alcohol_percent > 0
-        AND pieces_per > 0
-        AND price > 0
-    )
+//     SELECT
+//         d.id,
+//         d.drink_name,
+//         d.total_volume,
+//         d.alcohol_percent,
+//         d.price,
+//         dc.Category_Name,
+//         d.pieces_per,
+//         d.image_url,
+//         d.date_ISO,
+//         d.link,
+//         d.store,
+//         d.origin_country,
+//                 d.container,
+//                 d.description
+//         FROM RankedDrinks d INNER JOIN
+//         Drink_Categories dc ON d.category_ID = dc.category_ID
+//         WHERE d.rn = 1
+//         ${CATEGORY_CONDITION}
+//         ORDER BY d.drink_name;
+//     `
 
-    SELECT
-        d.id,
-        d.drink_name,
-        d.total_volume,
-        d.alcohol_percent,
-        d.price,
-        dc.Category_Name,
-        d.pieces_per,
-        d.image_url,
-        d.date_ISO,
-        d.link,
-        d.store,
-        d.origin_country,
-		d.container,
-		d.description
-        FROM RankedDrinks d INNER JOIN 
-        Drink_Categories dc ON d.category_ID = dc.category_ID
-        WHERE d.rn = 1 
-        ${CATEGORY_CONDITION}
-        ORDER BY d.drink_name;
-    `;
-}
-
-const findMaxStats = (categoryID) =>{
+const findDrinks = (categoryID, fromToday = false) =>{
     return new Promise((resolve, reject) =>{
         const CATEGORY_CONDITION = categoryID ? `AND d.category_ID = ${categoryID}` : "";
-
-        let sql = 
+        const sql = 
         `
         WITH RankedDrinks AS (
             SELECT *,
             ROW_NUMBER() OVER (PARTITION BY link  ORDER BY id DESC) as rn
             FROM Drinks
-            WHERE date_ISO = date('now', 'localtime')  
-            AND total_volume > 0
+            WHERE total_volume > 0
+            ${fromToday ? "AND date_ISO = date('now', 'localtime')  " : ""}
+            AND alcohol_percent > 0
+            AND pieces_per > 0
+            AND price > 0
+        )
+
+        SELECT
+            d.id,
+            d.drink_name,
+            d.total_volume,
+            d.alcohol_percent,
+            d.price,
+            dc.Category_Name,
+            d.pieces_per,
+            d.image_url,
+            d.date_ISO,
+            d.link,
+            d.store,
+            d.origin_country,
+            d.container,
+            d.description
+            FROM RankedDrinks d INNER JOIN 
+            Drink_Categories dc ON d.category_ID = dc.category_ID
+            WHERE d.rn = 1 
+            ${CATEGORY_CONDITION}
+            ORDER BY d.drink_name;
+        `;
+
+        db.all(sql, [], (err, row)=>{
+            if(err) resolve(err);
+            resolve(row);
+        });
+    });
+}
+
+const findMaxStats = (categoryID, fromToday = false) =>{
+    return new Promise((resolve, reject) =>{
+        const CATEGORY_CONDITION = categoryID ? `AND d.category_ID = ${categoryID}` : "";
+
+        const sql = 
+        `
+        WITH RankedDrinks AS (
+            SELECT *,
+            ROW_NUMBER() OVER (PARTITION BY link  ORDER BY id DESC) as rn
+            FROM Drinks
+            WHERE total_volume > 0
+            ${fromToday ? "AND date_ISO = date('now', 'localtime')  " : ""}
             AND alcohol_percent > 0
             AND pieces_per > 0
             AND price > 0
@@ -70,94 +109,80 @@ const findMaxStats = (categoryID) =>{
 
         db.get(sql, [], (err, row)=>{
             if(err) resolve(err);
-            console.log(row);
             resolve(row);
         });
     });
 }
 
-const getAll = (req, res) =>{
-    console.log('All request');
-    sql = getSql();
+const get = async (categoryID) =>{
+    let maxStats = await findMaxStats(categoryID, true);
+    let fromToday = true;
+    if (maxStats.max_ML == null){ // Means there's no drinks today
+        maxStats = await findMaxStats(categoryID); //  Must refetch but not for today
+        fromToday = false;
+    }
 
-    db.all(sql, [], async (err, rows)=>{
-        if(err){
-            console.error(err.message);
-            return res.status(500).send("Couldn't get everything");
-        }else{
-            console.log(`Bev count: ${rows.length}`);
-            const maxStats = await findMaxStats();
-            res.send({maxStats: maxStats, drinks: rows});
-        } 
-    });
+    const drinks = await findDrinks(categoryID, fromToday);
+    return {maxStats: maxStats, drinks: drinks}
 }
 
-const getSpirit = (req, res) =>{
+const getAll = async (req, res) =>{
+    console.log('All request');
+
+    try{
+        const data = await get();
+        res.send(data);
+    }catch(err){
+        res.status(500).send("Couldn't get everything");
+    }
+}
+
+const getSpirit = async (req, res) =>{
     console.log('Spirit request');
     const categoryID = 1;
 
-    sql = getSql(categoryID);
-
-    db.all(sql, [], async (err, rows)=>{
-        if(err){
-            console.error(err.message);
-            return res.status(500).send("Couldn't get spirits");
-        }else{
-            const maxStats = await findMaxStats(categoryID);
-            res.send({maxStats: maxStats, drinks: rows});
-        } 
-    });
+    try{
+        const data = await get(categoryID);
+        res.send(data);
+    }catch(err){
+        res.status(500).send("Couldn't get spirits");
+    }
 }
 
-const getBeerCider = (req, res) =>{
+const getBeerCider = async (req, res) =>{
     console.log('BeerCider request');
     const categoryID = 2;
     
-    sql = getSql(categoryID);
-
-    db.all(sql, [], async (err, rows)=>{
-        if(err){
-            console.error(err.message);
-            return res.status(500).send("Couldn't get beer/cider");
-        }else{
-            const maxStats = await findMaxStats(categoryID);
-            res.send({maxStats: maxStats, drinks: rows});
-        } 
-    });
+    try{
+        const data = await get(categoryID);
+        res.send(data);
+    }catch(err){
+        res.status(500).send("Couldn't get beer/cider");
+    }
 }
 
-const getWine = (req, res) =>{
+const getWine = async (req, res) =>{
     console.log('Wine request');
     const categoryID = 3;
 
-    sql = getSql(categoryID);
-
-    db.all(sql, [], async (err, rows)=>{
-        if(err){
-            console.error(err.message);
-            return res.status(500).send("Couldn't get wine");
-        }else{
-            const maxStats = await findMaxStats(categoryID);
-            res.send({maxStats: maxStats, drinks: rows});
-        } 
-    });
+    try{
+        const data = await get(categoryID);
+        res.send(data);
+    }catch(err){
+        res.status(500).send("Couldn't get wine");
+    }
 }
 
 const getCooler = async (req, res) =>{
     console.log('Cooler request');
     const categoryID = 5;
 
-    sql = getSql(categoryID);
-
-    db.all(sql, [], async (err, rows)=>{
-        if(err){
-            console.error(err.message);
-            return res.status(500).send("Couldn't get coolers");
-        }else{
-            const maxStats = await findMaxStats(categoryID);
-            res.send({maxStats: maxStats, drinks: rows});
-        } 
-    });
+    try{
+        const data = await get(categoryID);
+        res.send(data);
+    }catch(err){
+        res.status(500).send("Couldn't get coolers");
+    }
 }
 
 const incrementQrCount = (req, res) =>{

@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "build:image": "docker build -t budgetboozeimage .",
+    "save:image": "docker save -o budgetboozeimage.tar budgetboozeimage",
+    "deploy": "scp ./budgetboozeimage.tar miller@10.0.0.212:/home/miller",
+    "deploy:full": "npm run build:image && npm run save:image && npm run deploy"
   },
   "author": "Clark Miller",
   "license": "ISC",
