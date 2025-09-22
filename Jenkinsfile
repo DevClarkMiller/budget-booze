@@ -22,10 +22,14 @@ pipeline {
                 dir('backend') {
                     sh 'npm install'
 
-                    writeFile: '.env', text:"""
-                        DB_PATH='/usr/src/app/src/bevs.db'
-                        #DB_PATH = src/bevs.db/usr/src/app #
-                    """
+                     withCredentials([file(credentialsId: 'budgetbooze-backend-env', variable: 'ENV_FILE')]) {
+                    sh '''
+                        echo "Secret file path: $ENV_FILE"
+                        cp "$ENV_FILE" .env   # copy into workspace
+                        cat .env | grep NODE_ENV || true
+                    '''
+
+                    sh 'cat .env'
                 }
             }
         }
