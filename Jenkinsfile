@@ -22,7 +22,6 @@ pipeline {
                 dir('src') {
                         git branch: 'main',
                             url: 'https://github.com/DevClarkMiller/mill-comps.git'
-
                     }
 
                 dir('backend') {
