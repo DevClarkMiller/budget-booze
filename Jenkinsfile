@@ -16,8 +16,8 @@ pipeline {
         stage("Install Dependencies") {
             steps {
                 sh 'npm install'
-                writeFile: ".env.development", text:""
-                writeFile: ".env.production", text:""
+                writeFile file: ".env.development", text:""
+                writeFile file: ".env.production", text:""
 
                 dir('backend') {
                     sh 'npm install'
