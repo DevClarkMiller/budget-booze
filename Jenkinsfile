@@ -19,13 +19,14 @@ pipeline {
                 writeFile file: ".env.development", text:""
                 writeFile file: ".env.production", text:""
 
-                dir('src') {
-                    echo "Cloning mill-comps"
-                    git branch: 'main',
-                        url: 'https://github.com/DevClarkMiller/mill-comps.git'
-                    sh 'ls'
-                }
-
+                dir('src/mill-comps') {
+                    git(
+                        branch: 'main',
+                        url: 'https://github.com/DevClarkMiller/mill-comps.git',
+                        changelog: false,
+                        poll: false
+                    )
+            }
                 dir('backend') {
                     withCredentials([file(credentialsId: 'budgetbooze-backend-env', variable: 'ENV_FILE')]) {
                         script {
