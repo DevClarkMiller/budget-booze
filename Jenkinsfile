@@ -16,8 +16,9 @@ pipeline {
         stage("Install Dependencies") {
             steps {
                 sh 'npm install'
-                cd 'backend'
-                sh 'npm install'
+                dir('backend') {
+                    sh 'npm install'
+                }
             }
         }
 
