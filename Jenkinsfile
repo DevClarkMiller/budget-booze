@@ -20,7 +20,11 @@ pipeline {
                 writeFile file: ".env.production", text:""
 
                 dir('backend') {
-                    sh 'npm install'
+                    dir('src') {
+                        git branch: 'main',
+                            url: 'https://github.com/DevClarkMiller/mill-comps.git'
+
+                    }
 
                     withCredentials([file(credentialsId: 'budgetbooze-backend-env', variable: 'ENV_FILE')]) {
                         sh '''
