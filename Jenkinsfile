@@ -19,13 +19,13 @@ pipeline {
                 writeFile file: ".env.development", text:""
                 writeFile file: ".env.production", text:""
 
-                dir('backend') {
-                    dir('src') {
+                dir('src') {
                         git branch: 'main',
                             url: 'https://github.com/DevClarkMiller/mill-comps.git'
 
                     }
 
+                dir('backend') {
                     withCredentials([file(credentialsId: 'budgetbooze-backend-env', variable: 'ENV_FILE')]) {
                         script {
                             def secretContent = readFile(env.ENV_FILE)
