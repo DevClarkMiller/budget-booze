@@ -23,6 +23,7 @@ pipeline {
                     echo "Cloning mill-comps"
                     git branch: 'main',
                         url: 'https://github.com/DevClarkMiller/mill-comps.git'
+                    sh 'ls'
                 }
 
                 dir('backend') {
