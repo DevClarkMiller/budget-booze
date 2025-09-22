@@ -1,7 +1,4 @@
-import { useEffect } from "react";
-
 //Components
-import CardWrapper from "./mill-comps/components/CardWrapper";
 import { ShakeLittle } from "reshake";
 import CardArray from "./utilities/CardArray";
 

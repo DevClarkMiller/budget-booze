@@ -1,10 +1,6 @@
-import { useContext, useEffect, useMemo } from "react";
+import { useContext } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-
-//Components
-import CardWrapper from "./mill-comps/components/CardWrapper";
-import { ShakeLittle } from "reshake";
 
 //Icons
 import { RxHamburgerMenu } from "react-icons/rx"

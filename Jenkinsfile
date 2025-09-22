@@ -1,15 +1,27 @@
 pipeline {
     agent any
     stages {
-        stage("build") {
+        environment {
+            NODE_ENV = 'production'
+        }
+
+        stage("Checkout") {
             steps {
-                ls
+                checkout scm
             }
         }
 
-        stage("deploy") {
+        stage("Install Dependencies") {
             steps {
-                echo "Deploying Budget-Booze"
+                sh 'npm install'
+                cd 'backend'
+                sh 'npm install'
+            }
+        }
+
+        stage("Build") {
+            steps {
+                echo "Building Budget-Booze"
             }
         }
     }

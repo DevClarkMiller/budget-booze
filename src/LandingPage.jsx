@@ -5,9 +5,6 @@ import { useNavigate } from "react-router-dom";
 import About from "./About";
 import DrinksCard from "./Drink/DrinksCard";
 
-//Images
-import MeBoozing from './images/Boozer.jpeg';
-
 //Context
 import { DrinksContext } from "./App";
 
