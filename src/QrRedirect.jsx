@@ -11,7 +11,7 @@ const QrRedirect = () => {
 
     const postNNav = async () =>{
         try{
-            const response = await api.put('/incrementQr');
+            await api.put('/incrementQr');
         }catch(err){
             console.error(err);
         }

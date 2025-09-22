@@ -11,7 +11,7 @@ import SelectSort from "./Categories/SelectSort";
 import { DrinksContext } from "./App";
 
 const Menu = () =>{
-    const { showCombos, setAsideActive, setCurrentSort } = useContext(DrinksContext);
+    const { showCombos, setCurrentSort } = useContext(DrinksContext);
 
     const isDesktopOrLaptop = useMediaQuery({
         query: '(min-width: 1024px)'

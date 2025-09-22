@@ -1,4 +1,4 @@
-import { useContext, useState, useMemo } from "react";
+import { useContext } from "react";
 import { useMediaQuery } from "react-responsive";
 
 //Components
@@ -14,7 +14,7 @@ import { DrinksContext } from "./App";
 
 
 const AsideMenu = (props) =>{
-    const {handleCategoryChange, showCombos, asideActive, setAsideActive, handleFilterChange} = useContext(DrinksContext);
+    const { handleCategoryChange, setAsideActive } = useContext(DrinksContext);
 
     const isDesktopOrLaptop = useMediaQuery({
         query: '(min-width: 1080px)'

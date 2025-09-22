@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useParams, Routes, Route } from "react-router-dom";
 
 //Components

@@ -1,5 +1,5 @@
-export default //Scrolls you to a given element, make sure to give 'ref.current'
-    (ref) => {    //Takes in a refsCurrent
+//Scrolls you to a given element, make sure to give 'ref.current'
+const scrollTo = ref => {    //Takes in a refsCurrent
   const comp = ref.current;
   if(!comp) return;   //Returns if the component hasn't been referenced yet
   
@@ -12,3 +12,5 @@ export default //Scrolls you to a given element, make sure to give 'ref.current'
 
   window.scrollTo({ top: yCoord, ...scrollOptions });
 }
+
+export default scrollTo;

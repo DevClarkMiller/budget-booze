@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 
 //Icons
@@ -9,9 +9,6 @@ import { RxHamburgerMenu } from "react-icons/rx"
 import { DrinksContext } from "./App";
 
 const Header = ({}) =>{
-    const navigate = useNavigate();
-    const location = useLocation();
-
     const { showCombos, setAsideActive } = useContext(DrinksContext);
 
     const isDesktopOrLaptop = useMediaQuery({
