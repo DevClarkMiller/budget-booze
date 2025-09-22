@@ -27,7 +27,10 @@ pipeline {
                     }
 
                     withCredentials([file(credentialsId: 'budgetbooze-backend-env', variable: 'ENV_FILE')]) {
-                        sh 'cat "$ENV_FILE" > .env'
+                        script {
+                            def secretContent = readFile(env.ENV_FILE)
+                            writeFile file: '.env', text: secretContent
+                        }
                     }
                 }
             }
