@@ -27,13 +27,7 @@ pipeline {
                     }
 
                     withCredentials([file(credentialsId: 'budgetbooze-backend-env', variable: 'ENV_FILE')]) {
-                        sh '''
-                            echo "Secret file path: $ENV_FILE"
-                            cp "$ENV_FILE" .env   # copy into workspace
-                            cat .env | grep NODE_ENV || true
-                        '''
-
-                        sh 'cat .env'
+                        sh 'cat "$ENV_FILE" > .env'
                     }
                 }
             }
