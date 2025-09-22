@@ -50,7 +50,7 @@ pipeline {
 
         stage("Deploy") {
             steps {
-                echo "DEPLOYING"
+                sh 'scp -r build/* clark@clarkmiller.ca:/var/www/budgetbooze.ca/html'
             }
         }
     }
