@@ -33,7 +33,7 @@ const DrinksPage = ({chunkIndex, chunk}) =>{
 
     const numStandards = useMemo(() => (calcStandard(drink)), [drink]);
 
-    const countryCode = useMemo(() => countries?.find((country) => country.name === drink?.origin_country)?.code ,[countries, drink]);
+    const countryCode = useMemo(() => countries?.find((country) => country.name === drink?.origin_country)?.code ,[drink]);
 
     const flagUrl = useMemo(() => `https://flagsapi.com/${countryCode}/flat/64.png`, [countryCode]);
 
@@ -54,7 +54,7 @@ const DrinksPage = ({chunkIndex, chunk}) =>{
             }else{
                 return `${(numStandards / drink?.pieces_per)?.toFixed(1)}`
             }
-        }, [drink]);
+        }, []);
 
         return(
             <>
@@ -77,7 +77,7 @@ const DrinksPage = ({chunkIndex, chunk}) =>{
     const MainDetails = () =>{
         const volText = useMemo(() => (
             drink?.pieces_per > 1 ? `${drink?.pieces_per} x ${drink?.total_volume} ml` : `${drink?.total_volume} ml`
-        ), [drink]);
+        ), []);
 
         return(
             <>

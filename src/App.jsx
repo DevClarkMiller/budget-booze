@@ -27,7 +27,7 @@ const defaultMaxs ={
 
 const RedirectPage = () =>{
   const navigate = useNavigate();
-  useEffect(() =>navigate('/'), []);
+  useEffect(() =>navigate('/'), [navigate]);
   return(<></>);
 }
 
@@ -118,15 +118,15 @@ function App() {
       case "Spirit":
         categoryName = "spirit";
         break;
-      case "BeerCider":
-        categoryName = "beerCider";
-        break;
       case "Wine":
         categoryName = "wine";
         break;
       case "Cooler":
         categoryName = "cooler";
         break;
+      case "BeerCider":
+      default:
+        categoryName = "beerCider";
     }
     data = await fetchGet(`/get/${categoryName}`);
 
@@ -142,7 +142,7 @@ function App() {
     Upon page render, fetch all the drinks from backend
   */
 
-  useEffect(async () =>{
+  useEffect(() =>{
     const fetchAll = async ()=>{
       const data = await fetchGet('get/all');
       setRawDrinksContent(data.drinks);

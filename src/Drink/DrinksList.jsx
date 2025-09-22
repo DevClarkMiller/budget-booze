@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useLayoutEffect } from "react";
+import { useContext, useMemo, useRef, useLayoutEffect } from "react";
 
 //Components
 import DrinksCard from "./DrinksCard";

@@ -8,7 +8,7 @@ import { RxHamburgerMenu } from "react-icons/rx"
 //Context
 import { DrinksContext } from "./App";
 
-const Header = ({}) =>{
+const Header = () =>{
     const { showCombos, setAsideActive } = useContext(DrinksContext);
 
     const isDesktopOrLaptop = useMediaQuery({

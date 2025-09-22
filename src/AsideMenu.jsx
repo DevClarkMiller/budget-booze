@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { useMediaQuery } from "react-responsive";
 
 //Components
 import "react-sliding-pane/dist/react-sliding-pane.css";
@@ -14,13 +13,7 @@ import { DrinksContext } from "./App";
 
 
 const AsideMenu = (props) =>{
-    const { handleCategoryChange, setAsideActive } = useContext(DrinksContext);
-
-    const isDesktopOrLaptop = useMediaQuery({
-        query: '(min-width: 1080px)'
-    })
-
-    const checkClosePane = () =>{ if(!isDesktopOrLaptop) setAsideActive(false); }
+    const { handleCategoryChange } = useContext(DrinksContext);
 
     return(
         <aside className={`flex flex-col size-full bg-white rounded-md ml-5 p-5 gap-3 ${props.className}`}>

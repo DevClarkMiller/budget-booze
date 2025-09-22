@@ -9,19 +9,17 @@ import LoadingIcons from "react-loading-icons";
 const QrRedirect = () => {
     const navigate = useNavigate();
 
-    const postNNav = async () =>{
-        try{
-            await api.put('/incrementQr');
-        }catch(err){
-            console.error(err);
-        }
-
-        navigate('/');  //Navs to homepage
-    };
-
     useEffect(() =>{
-        postNNav();
-    }, []);
+        (async () => {
+            try{
+                await api.put('/incrementQr');
+            }catch(err){
+                console.error(err);
+            }
+
+            navigate('/');  //Navs to homepage
+        })();
+    }, [navigate]);
 
     return (
         <div className="size-full col-flex-center justify-center flex-grow">
