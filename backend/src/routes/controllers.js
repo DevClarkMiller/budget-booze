@@ -1,7 +1,7 @@
 const sqlDB = require('../database');
 const db = new sqlDB().createDB();
 
-const findDrinks = (categoryID, fromToday = false) =>{
+const findDrinks = (categoryID) =>{
     return new Promise((resolve, reject) =>{
         const CATEGORY_CONDITION = categoryID ? `WHERE d.category_ID = ${categoryID}` : "";
         const sql = 
@@ -13,7 +13,6 @@ const findDrinks = (categoryID, fromToday = false) =>{
             AND alcohol_percent > 0
             AND pieces_per > 0
             AND price > 0
-            ${fromToday ? "AND date_ISO = date('now', 'localtime')  " : ""}
             GROUP BY link
         )
         SELECT d.id, d.drink_name, d.total_volume, d.alcohol_percent, d.price,
@@ -27,54 +26,22 @@ const findDrinks = (categoryID, fromToday = false) =>{
         `
 
         db.all(sql, [], (err, row)=>{
-            if(err) resolve(err);
-            resolve(row);
-        });
-    });
-}
-
-const findMaxStats = (categoryID, fromToday = false) =>{
-    return new Promise((resolve, reject) =>{
-        const CATEGORY_CONDITION = categoryID ? `WHERE d.category_ID = ${categoryID}` : "";
-
-        const sql = 
-        `
-        WITH LatestDrinks AS (
-        SELECT link, MAX(id) as max_id
-        FROM Drinks
-        WHERE total_volume > 0
-        AND alcohol_percent > 0
-        AND pieces_per > 0
-        AND price > 0
-        ${fromToday ? "AND date_ISO = date('now','localtime')" : ""}
-        GROUP BY link
-        )
-        SELECT
-            MAX(d.alcohol_percent) AS max_BAV,
-            MAX(d.total_volume)    AS max_ML,
-            MAX(d.pieces_per)      AS max_QTY
-        FROM Drinks d
-        INNER JOIN LatestDrinks ld ON d.link = ld.link AND d.id = ld.max_id
-        INNER JOIN Drink_Categories dc ON d.category_ID = dc.category_ID;
-        ${CATEGORY_CONDITION}
-        `
-
-        db.get(sql, [], (err, row)=>{
-            if(err) resolve(err);
+            if(err) reject(err);
             resolve(row);
         });
     });
 }
 
 const get = async (categoryID) =>{
-    let maxStats = await findMaxStats(categoryID, true);
-    let fromToday = true;
-    if (maxStats.max_ML == null){ // Means there's no drinks today
-        maxStats = await findMaxStats(categoryID); //  Must refetch but not for today
-        fromToday = false;
-    }
+    const drinks = await findDrinks(categoryID, false);
 
-    const drinks = await findDrinks(categoryID, fromToday);
+    const maxStats = { max_BAV: 0, max_ML: 0, max_QTY: 0 };
+    drinks.forEach(drink => {
+        maxStats.max_BAV = Math.max(maxStats.max_BAV, drink.alcohol_percent);
+        maxStats.max_ML = Math.max(maxStats.max_ML, drink.total_volume);
+        maxStats.max_QTY = Math.max(maxStats.max_QTY, drink.pieces_per);
+    });
+
     return {maxStats: maxStats, drinks: drinks}
 }
 
