@@ -7,6 +7,19 @@ pipeline {
         NODE_ENV = 'production'
     }
 
+    parameters {
+        booleanParam(
+            name: 'FORCE_FRONTEND',
+            defaultValue: false,
+            description: 'Force frontend stage to run even if no changes detected'
+        )
+        booleanParam(
+            name: 'FORCE_BACKEND',
+            defaultValue: false,
+            description: 'Force backend stage to run even if no changes detected'
+        )
+    }
+
     stages {
 
         stage("Checkout") {
@@ -16,7 +29,13 @@ pipeline {
         }
 
         stage("Install Dependencies Frontend") {
-            when { changeset "src/**" }
+            when { 
+                anyOf {
+                    changeset "src/**"
+                    changeset "Jenkinsfile"
+                    expression { return params.FORCE_FRONTEND }
+                }
+            }
             steps {
                 sh 'npm install'
                 writeFile file: ".env.development", text:""
@@ -34,7 +53,13 @@ pipeline {
         }
 
         stage("Install Dependencies Backend") {
-            when { changeset "backend/**" }
+            when { 
+                anyOf {
+                    changeset "backend/**"
+                    changeset "Jenkinsfile"
+                    expression { return params.FORCE_FRONTEND }
+                }
+            }
             steps {
                 dir('backend') {
                     loadEnvFile('budgetbooze', 'backend', 'production', '.env')
@@ -43,13 +68,25 @@ pipeline {
         }
 
         stage ("Build Frontend") {
-            when { changeset "src/**" }
+            when { 
+                anyOf {
+                    changeset "src/**"
+                    changeset "Jenkinsfile"
+                    expression { return params.FORCE_FRONTEND }
+                }
+            }
             steps {
                 sh "npm run build"
             }
         }
         stage("Build Backend") {
-            when { changeset "backend/**" }
+            when { 
+                anyOf {
+                    changeset "backend/**"
+                    changeset "Jenkinsfile"
+                    expression { return params.FORCE_FRONTEND }
+                }
+            }
             steps {
                 dir('backend') {
                     sh 'npm run build:image'
@@ -59,14 +96,26 @@ pipeline {
         }
 
         stage("Deploy Frontend") {
-            when { changeset "src/**" }
+            when { 
+                anyOf {
+                    changeset "src/**"
+                    changeset "Jenkinsfile"
+                    expression { return params.FORCE_FRONTEND }
+                }
+            }
             steps {
                 sh 'scp -r build/* clark@clarkmiller.ca:/var/www/budgetbooze.ca/html'
             }
         }
 
         stage("Deploy Backend") {
-            when { changeset "backend/**" }
+            when { 
+                anyOf {
+                    changeset "backend/**"
+                    changeset "Jenkinsfile"
+                    expression { return params.FORCE_FRONTEND }
+                }
+            }
             steps {
                 // sh 'scp backend/budgetboozeimage.tar miller@sys1.clarkmiller.ca:/home/miller'
                 // sh 'ssh sys1.clarkmiller.ca "docker load -i budgetboozeimage.tar"'
