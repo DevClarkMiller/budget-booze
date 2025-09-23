@@ -15,3 +15,6 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 5000
+
+# Map the needed volume to the data dir
+VOLUME ["/usr/src/app/data"]
