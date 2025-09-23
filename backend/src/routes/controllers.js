@@ -6,38 +6,25 @@ const findDrinks = (categoryID, fromToday = false) =>{
         const CATEGORY_CONDITION = categoryID ? `AND d.category_ID = ${categoryID}` : "";
         const sql = 
         `
-        WITH RankedDrinks AS (
-            SELECT *,
-            ROW_NUMBER() OVER (PARTITION BY link  ORDER BY id DESC) as rn
+        WITH LatestDrinks AS (
+            SELECT link, MAX(id) as max_id
             FROM Drinks
             WHERE total_volume > 0
-            ${fromToday ? "AND date_ISO = date('now', 'localtime')  " : ""}
             AND alcohol_percent > 0
             AND pieces_per > 0
             AND price > 0
+            ${fromToday ? "AND date_ISO = date('now', 'localtime')  " : ""}
+            GROUP BY link
         )
-
-        SELECT
-            d.id,
-            d.drink_name,
-            d.total_volume,
-            d.alcohol_percent,
-            d.price,
-            dc.Category_Name,
-            d.pieces_per,
-            d.image_url,
-            d.date_ISO,
-            d.link,
-            d.store,
-            d.origin_country,
-            d.container,
-            d.description
-            FROM RankedDrinks d INNER JOIN 
-            Drink_Categories dc ON d.category_ID = dc.category_ID
-            WHERE d.rn = 1 
-            ${CATEGORY_CONDITION}
-            ORDER BY d.drink_name;
-        `;
+        SELECT d.id, d.drink_name, d.total_volume, d.alcohol_percent, d.price,
+            dc.Category_Name, d.pieces_per, d.image_url, d.date_ISO,
+            d.link, d.store, d.origin_country, d.container, d.description
+        FROM Drinks d
+        INNER JOIN LatestDrinks ld ON d.link = ld.link AND d.id = ld.max_id
+        INNER JOIN Drink_Categories dc ON d.category_ID = dc.category_ID
+        ${CATEGORY_CONDITION ? `WHERE ${CATEGORY_CONDITION}` : ""}
+        ORDER BY d.drink_name;
+        `
 
         db.all(sql, [], (err, row)=>{
             if(err) resolve(err);
