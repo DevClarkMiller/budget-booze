@@ -1,3 +1,5 @@
+@Library('pipeline-lib') _
+
 pipeline {
     agent any
 
@@ -35,12 +37,7 @@ pipeline {
             when { changeset "backend/**" }
             steps {
                 dir('backend') {
-                    withCredentials([file(credentialsId: 'budgetbooze-backend-env', variable: 'ENV_FILE')]) {
-                        script {
-                            def secretContent = readFile(env.ENV_FILE)
-                            writeFile file: '.env', text: secretContent
-                        }
-                    }
+                    loadEnvFile('budgetbooze', 'backend', 'production', '.env')
                 }
             }
         }
