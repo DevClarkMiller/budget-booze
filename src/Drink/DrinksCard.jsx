@@ -3,7 +3,7 @@ import { useMemo } from "react";
 //Components
 import CardWrapper from "../mill-comps/components/CardWrapper";
 
-const DrinksCard = ({drink, index, nav, className, height = null, width = null}) =>{
+const DrinksCard = ({drink, index, nav, className, height = 200, width = 200}) =>{
     //State
 
     //Memoized values
