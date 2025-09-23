@@ -57,7 +57,7 @@ pipeline {
                 anyOf {
                     changeset "backend/**"
                     changeset "Jenkinsfile"
-                    expression { return params.FORCE_FRONTEND }
+                    expression { return params.FORCE_BACKEND }
                 }
             }
             steps {
@@ -84,7 +84,7 @@ pipeline {
                 anyOf {
                     changeset "backend/**"
                     changeset "Jenkinsfile"
-                    expression { return params.FORCE_FRONTEND }
+                    expression { return params.FORCE_BACKEND }
                 }
             }
             steps {
@@ -113,7 +113,7 @@ pipeline {
                 anyOf {
                     changeset "backend/**"
                     changeset "Jenkinsfile"
-                    expression { return params.FORCE_FRONTEND }
+                    expression { return params.FORCE_BACKEND }
                 }
             }
             steps {
