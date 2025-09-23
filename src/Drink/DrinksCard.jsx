@@ -3,7 +3,7 @@ import { useMemo } from "react";
 //Components
 import CardWrapper from "../mill-comps/components/CardWrapper";
 
-const DrinksCard = ({drink, index, nav, className}) =>{
+const DrinksCard = ({drink, index, nav, className, height = null, width = null}) =>{
     //State
 
     //Memoized values
@@ -14,7 +14,7 @@ const DrinksCard = ({drink, index, nav, className}) =>{
     return(
         <>
             {drink && <>
-                <CardWrapper to={(!isNaN(index) && nav) ? `single/${index}` : null} className={`drinks-card-mobile ${className ? className : "drinks-card-responsive"} lg:flex shadow-md`}>
+                <CardWrapper to={(!isNaN(index) && nav) ? `single/${index}` : null} className={`drinks-card-mobile nice-trans ${className ? className : "drinks-card-responsive"} lg:flex shadow-md`}>
                     <div className={`flippable-card-front`}>
                         <div className="drink-header flex items-center gap-2 w-3/4">
                             <h3 className={`drink-store  ${logoColour}`}>{drink.store}</h3>
@@ -22,7 +22,7 @@ const DrinksCard = ({drink, index, nav, className}) =>{
                         </div>
                         <h4 className="drink-volume">{volumeDisplay}</h4>
                         <div className="drink-img-container flex-grow row-flex-center items-end">
-                            <img className="object-contain" loading="eager" src={drink?.image_url} alt={`${drink.drink_name} preview`}></img>
+                            <img className="object-contain" width={width} height={height} loading="lazy" src={drink?.image_url} alt={`${drink.drink_name} preview`}></img>
                         </div>
                         
                         <span className="flex flex-row justify-between w-full">
