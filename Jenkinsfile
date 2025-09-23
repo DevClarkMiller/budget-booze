@@ -53,7 +53,7 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'npm run build:image'
-                    sh 'npm run save:image'
+                    // sh 'npm run save:image'
                 }
             }
         }
@@ -68,8 +68,8 @@ pipeline {
         stage("Deploy Backend") {
             when { changeset "backend/**" }
             steps {
-                sh 'scp backend/budgetboozeimage.tar miller@sys1.clarkmiller.ca:/home/miller'
-                sh 'ssh sys1.clarkmiller.ca "docker load -i budgetboozeimage.tar"'
+                // sh 'scp backend/budgetboozeimage.tar miller@sys1.clarkmiller.ca:/home/miller'
+                // sh 'ssh sys1.clarkmiller.ca "docker load -i budgetboozeimage.tar"'
                 sh 'ssh sys1.clarkmiller.ca "docker compose stop budgetbooze ; docker compose rm -f budgetbooze; docker compose up -d budgetbooze"'
             }
         }
