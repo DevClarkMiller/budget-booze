@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 //Components
 import About from "./About";
 import DrinksCard from "./Drink/DrinksCard";
+import { Bars } from "react-loading-icons";
 
 //Context
 import { DrinksContext } from "./App";
@@ -51,10 +52,13 @@ const LandingPage = () =>{
                         </p>
                     </div>
                 </div>
-                <div className="random-pick-card size-full col-flex-center col-span-1 bg-white p-2 container">
+                <div className="random-pick-card size-full col-flex-center col-span-1 bg-white p-2 container nice-trans">
                     <h4 className="font-Lobster text-4xl mb-2">Random Top Pick</h4>
-                    {displayDrink&&<DrinksCard className={`!rounded-none !shadow-none !w-5/6`} index={0} drink={displayDrink} />}
-                </div>
+                    { displayDrink != null ? <DrinksCard className={`!rounded-none !shadow-none !w-5/6`} index={0} drink={displayDrink} /> : 
+                    <div className="h-96 flex items-center justify-center">
+                        <Bars stroke="black"/>
+                    </div> }
+                </div> 
             </div>
 
 
