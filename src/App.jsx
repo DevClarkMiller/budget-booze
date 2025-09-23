@@ -49,6 +49,8 @@ function App() {
 
   const [currentCategory, setCurrentCategory] = useState("All");
 
+  const [loadingDrinks, setLoadingDrinks] = useState(false);
+
   //Reducers
   const [filters, dispatchFilters] = useReducer(filtersReducer, INITIAL_STATE);
 
@@ -128,6 +130,7 @@ function App() {
       default:
         categoryName = "beerCider";
     }
+    setLoadingDrinks(true);
     data = await fetchGet(`/get/${categoryName}`);
 
     if(!data) return;
@@ -135,6 +138,7 @@ function App() {
     console.log(filters)
     setRawDrinksContent(data.drinks);
     setFilterMaxs(data.maxStats);
+    setLoadingDrinks(false);
     navigate('/drinks/0');  // First page of drinks
   };
 
@@ -143,10 +147,12 @@ function App() {
   */
 
   useEffect(() =>{
-    const fetchAll = async ()=>{
+    const fetchAll = async ()=> {
+      setLoadingDrinks(true);
       const data = await fetchGet('get/all');
       setRawDrinksContent(data.drinks);
       setFilterMaxs(data.maxStats);
+      setLoadingDrinks(false);
     }
 
     fetchAll();
@@ -154,7 +160,7 @@ function App() {
 
   return (
     <div className="App col-flex-center min-h-screen">
-      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive, currentCategory, setCurrentCategory, handleFilterChange, filters, filterMaxs}}>
+      <DrinksContext.Provider value={{drinksContent, handleCategoryChange, setCurrentSort, showCombos, asideActive, setAsideActive, currentCategory, setCurrentCategory, handleFilterChange, filters, filterMaxs, loadingDrinks}}>
         <Header />
         <Menu />
         <MobileAsideMenu />

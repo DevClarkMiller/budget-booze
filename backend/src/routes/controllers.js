@@ -1,39 +1,6 @@
 const sqlDB = require('../database');
 const db = new sqlDB().createDB();
 
-// `
-//     WITH RankedDrinks AS (
-//         SELECT *,
-//         ROW_NUMBER() OVER (PARTITION BY link  ORDER BY id DESC) as rn
-//         FROM Drinks
-//         WHERE total_volume > 0
-//         AND alcohol_percent > 0
-//         AND pieces_per > 0
-//         AND price > 0
-//     )
-
-//     SELECT
-//         d.id,
-//         d.drink_name,
-//         d.total_volume,
-//         d.alcohol_percent,
-//         d.price,
-//         dc.Category_Name,
-//         d.pieces_per,
-//         d.image_url,
-//         d.date_ISO,
-//         d.link,
-//         d.store,
-//         d.origin_country,
-//                 d.container,
-//                 d.description
-//         FROM RankedDrinks d INNER JOIN
-//         Drink_Categories dc ON d.category_ID = dc.category_ID
-//         WHERE d.rn = 1
-//         ${CATEGORY_CONDITION}
-//         ORDER BY d.drink_name;
-//     `
-
 const findDrinks = (categoryID, fromToday = false) =>{
     return new Promise((resolve, reject) =>{
         const CATEGORY_CONDITION = categoryID ? `AND d.category_ID = ${categoryID}` : "";

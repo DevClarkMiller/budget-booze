@@ -11,7 +11,7 @@ import DrinksPage from './DrinksPage';
 // import { DrinksContext } from "../App";
 // import { ContentContext } from "../Content";
 
-const DrinksView = ({drinkChunks, chunkCount}) =>{    
+const DrinksView = ({loadingDrinks, drinkChunks, chunkCount}) =>{    
     const {id} = useParams();
 
     const parsedID = useMemo(() => parseInt(id), [id]);
@@ -28,7 +28,7 @@ const DrinksView = ({drinkChunks, chunkCount}) =>{
                 <div className="size-full row-flex-center min-h-screen">
                     <AsideMenu className={`w-1/4 hidden lg:flex`} />
 
-                    {chunk ? 
+                    {chunk && !loadingDrinks ? 
                         <DrinksList chunk={chunk} id={parsedID} className={`w-full lg:w-3/4`} chunkCount={chunkCount} />
                         :
                         <div className="size-full col-flex-center p-5">

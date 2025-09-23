@@ -13,7 +13,7 @@ export const ContentContext = createContext();
 const Content = () =>{
     const CHUNK_SIZE = 35;
     const navigate = useNavigate();
-    const { drinksContent } = useContext(DrinksContext);
+    const { drinksContent, loadingDrinks } = useContext(DrinksContext);
 
     const drinkChunks = useMemo(() =>{
         if(!drinksContent) return;
@@ -35,11 +35,11 @@ const Content = () =>{
     }
 
     return(
-        <main className="size-full col-flex-center justify-center flex-grow">    
+        <main className="size-full col-flex-center justify-center flex-grow"> 
             <ContentContext.Provider value={{handleDecrementPage, handleIncrementPage}}>
                 <Routes>
                     <Route path="/" element={<LandingPage />}/>
-                    <Route path="/drinks/:id/*" element={<DrinksView drinkChunks={drinkChunks} chunkCount={drinkChunks?.length} />}/>
+                    <Route path="/drinks/:id/*" element={<DrinksView loadingDrinks={loadingDrinks} drinkChunks={drinkChunks} chunkCount={drinkChunks?.length} />}/>
                     <Route path="*" element ={<NotFound />}/>
                 </Routes>
             </ContentContext.Provider>
