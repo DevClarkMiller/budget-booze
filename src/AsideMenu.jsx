@@ -11,18 +11,19 @@ import FilterQTY from "./Categories/filterQTY";
 //Context
 import { DrinksContext } from "./App";
 
+const AsideMenu = (props) => {
+  const { handleCategoryChange } = useContext(DrinksContext);
 
-const AsideMenu = (props) =>{
-    const { handleCategoryChange } = useContext(DrinksContext);
-
-    return(
-        <aside className={`flex flex-col size-full bg-white rounded-md ml-5 p-5 gap-3 ${props.className}`}>
-            {handleCategoryChange&&<CategoriesSection />}
-            <FilterML />
-            <FilterABV />
-            <FilterQTY />
-        </aside>
-    );
-}
+  return (
+    <aside
+      className={`flex flex-col size-full bg-white rounded-md ml-5 p-5 gap-3 ${props.className}`}
+    >
+      {handleCategoryChange && <CategoriesSection />}
+      <FilterML />
+      <FilterABV />
+      <FilterQTY />
+    </aside>
+  );
+};
 
 export default AsideMenu;
