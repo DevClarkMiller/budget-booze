@@ -32,6 +32,8 @@ pipeline {
             when { 
                 anyOf {
                     changeset "src/**"
+                    changeset "package.json"
+                    changeset "package-lock.json"
                     changeset "Jenkinsfile"
                     expression { return params.FORCE_FRONTEND }
                 }
@@ -71,6 +73,8 @@ pipeline {
             when { 
                 anyOf {
                     changeset "src/**"
+                    changeset "package.json"
+                    changeset "package-lock.json"
                     changeset "Jenkinsfile"
                     expression { return params.FORCE_FRONTEND }
                 }
@@ -99,6 +103,8 @@ pipeline {
             when { 
                 anyOf {
                     changeset "src/**"
+                    changeset "package.json"
+                    changeset "package-lock.json"
                     changeset "Jenkinsfile"
                     expression { return params.FORCE_FRONTEND }
                 }
