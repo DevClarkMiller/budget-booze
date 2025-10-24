@@ -6,6 +6,9 @@ import CardArray from "./utilities/CardArray";
 import { FaGithubSquare, FaLinkedin } from "react-icons/fa";
 
 const About = ({ socialsBottom }) => {
+  const test = "test";
+  if ("".includes(test)) console.log("TEST FOUND");
+
   return (
     <div
       className={`aboutPage ${!socialsBottom && "min-h-screen "} p-3 flex flex-col gap-5`}
