@@ -128,9 +128,7 @@ pipeline {
                 }
             }
             steps {
-                // sh 'scp backend/budgetboozeimage.tar miller@sys1.clarkmiller.ca:/home/miller'
-                // sh 'ssh sys1.clarkmiller.ca "docker load -i budgetboozeimage.tar"'
-                sh 'ssh sys1.clarkmiller.ca "docker compose stop budgetbooze ; docker compose rm -f budgetbooze; docker compose up -d budgetbooze"'
+                sh 'ssh 10.100.0.2 "docker compose stop budgetbooze ; docker compose rm -f budgetbooze; docker compose up -d budgetbooze"'
             }
         }
     }
