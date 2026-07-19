@@ -115,7 +115,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'scp -r build/* clark@clarkmiller.ca:/var/www/budgetbooze.ca/html'
+                sh 'scp -r build/* clark@clarkmiller.ca:/var/www/budgetbooze.clarkmiller.ca/html'
             }
         }
 
