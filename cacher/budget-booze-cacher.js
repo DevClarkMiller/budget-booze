@@ -4,7 +4,7 @@ puppeteer.use(StealthPlugin());
 
 class BudgetBoozeCache {
     constructor(){
-        this.URL = 'https://budgetbooze.ca/drinks/0'
+        this.URL = 'https://budgetbooze.clarkmiller.ca/drinks/0'
     }
 
     cacheBooze = async() =>{
