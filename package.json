@@ -2,7 +2,7 @@
   "name": "ontario-goon",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://budgetbooze.ca",
+  "proxy": "https://budgetbooze.clarkmiller.ca",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -38,7 +38,7 @@
     "start:prod": "env-cmd -f .env.production react-scripts start",
     "build:dev": "env-cmd -f .env.development react-scripts build",
     "build:prod": "env-cmd -f .env.production react-scripts build",
-    "push-build": "scp -r C:\\projects\\ontario-goon\\build\\. miller@10.0.0.182:/var/www/budgetbooze.ca/html/"
+    "push-build": "scp -r C:\\projects\\ontario-goon\\build\\. miller@10.0.0.182:/var/www/budgetbooze.clarkmiller.ca/html/"
   },
   "eslintConfig": {
     "extends": [
